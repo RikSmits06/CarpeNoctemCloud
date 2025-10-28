@@ -61,8 +61,9 @@ public class RemoteFileService {
         }
 
         return template.query("""
-                                      SELECT * FROM remote_file
+                                      SELECT *, ts_rank(search_vector, websearch_to_tsquery(:search)) AS rankings FROM remote_file
                                                WHERE search_vector @@ websearch_to_tsquery(:search)
+                                               ORDER BY rankings DESC
                                                LIMIT :limit OFFSET :offset;
                                       """, source, new RemoteFileMapper());
     }
