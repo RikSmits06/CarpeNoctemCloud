@@ -1,6 +1,6 @@
 package org.carpenoctemcloud.indexing;
 
-import org.carpenoctemcloud.services.RemoteFileService;
+import org.carpenoctemcloud.remoteFile.RemoteFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

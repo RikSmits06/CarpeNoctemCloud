@@ -7,22 +7,36 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-<div class="d-flex justify-content-center">
-    <form class="w-75 m-3 d-flex flex-row justify-content-center" action="/search" method="get"
-          id="searchForm">
-        <label hidden="hidden" for="inputQuery"></label><input
-            class="form-control m-0 w-75 h-100 rounded-end-0"
-            th:value="${query}"
-            placeholder="search..."
-            type="search" name="query"
-            id="inputQuery">
-        <label hidden="hidden" for="inputOffset"></label><input class="m-0 w-25 h-100" type="number"
-                                                                name="offset"
-                                                                th:value="0"
-                                                                id="inputOffset"
-                                                                hidden="hidden">
-        <input class="btn btn-primary rounded-start-0" type="submit" value="submit">
-    </form>
+<div class="d-flex w-100 flex-row justify-content-center">
+    <div class="d-flex flex-column w-100">
+        <div class="d-flex flex-row justify-content-center">
+            <form class="w-75 m-3 d-flex flex-row justify-content-center" action="/search"
+                  method="get"
+                  id="searchForm">
+                <label hidden="hidden" for="inputQuery"></label><input
+                    class="form-control m-0 w-75 h-100 rounded-end-0"
+                    th:value="${query}"
+                    placeholder="search..."
+                    type="search" name="query"
+                    id="inputQuery">
+                <label hidden="hidden" for="inputOffset"></label><input class="m-0 w-25 h-100"
+                                                                        type="number"
+                                                                        name="offset"
+                                                                        th:value="0"
+                                                                        id="inputOffset"
+                                                                        hidden="hidden">
+                <input class="btn btn-primary rounded-start-0" type="submit" value="submit">
+            </form>
+        </div>
+        <div class="d-flex justify-content-center flex-row">
+            <div class="flex-column justify-content-center">
+                <div class="border-1 border border-black" th:each="result : ${results}">
+                    <p th:text="${result.name()}"></p>
+                    <a th:href="${result.downloadURL()}" download>download</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

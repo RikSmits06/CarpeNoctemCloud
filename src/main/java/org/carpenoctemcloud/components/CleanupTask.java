@@ -2,7 +2,7 @@ package org.carpenoctemcloud.components;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import org.carpenoctemcloud.services.RemoteFileService;
+import org.carpenoctemcloud.remoteFile.RemoteFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,7 +25,7 @@ public class CleanupTask {
         logger.info("Started cleanup of old files.");
         Timestamp cutOff =
                 Timestamp.from(Instant.now().minusSeconds(MAX_AGE_CACHE_IN_DAYS * 24 * 60 * 60));
-        fileService.deleteOldRemoteFiles(cutOff);
-        logger.info("Finished cleaning up the old files.");
+        int deleteCount = fileService.deleteOldRemoteFiles(cutOff);
+        logger.info("Finished cleaning up the old files. Deleted " + deleteCount + " files.");
     }
 }

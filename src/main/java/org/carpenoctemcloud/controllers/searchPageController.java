@@ -1,5 +1,6 @@
 package org.carpenoctemcloud.controllers;
 
+import org.carpenoctemcloud.remoteFile.RemoteFileService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,19 +11,22 @@ import static org.carpenoctemcloud.configuration.ConfigurationConstants.MAX_FETC
 @Controller
 public class searchPageController {
 
-    @GetMapping({"/search", "/search/"})
-    public String searchPage(Model model, @RequestParam(required = false) String query,
-                             @RequestParam(required = false) Integer offset) {
-        if (offset != null) {
-            offset = (offset > 0) ? offset : 0;
-        }
+    final RemoteFileService service;
 
-        query = (query != null) ? query : "";
-        offset = (offset != null) ? offset : 0;
+    public searchPageController(RemoteFileService service) {
+        this.service = service;
+    }
+
+    @GetMapping({"/search", "/search/"})
+    public String searchPage(Model model,
+                             @RequestParam(required = false, defaultValue = "") String query,
+                             @RequestParam(required = false, defaultValue = "0") Integer offset) {
+        offset = (offset > 0) ? offset : 0;
 
         model.addAttribute("query", query);
         model.addAttribute("offset", offset);
         model.addAttribute("maxFetchSize", MAX_FETCH_SIZE);
+        model.addAttribute("results", service.searchRemoteFiles(query, offset));
 
         return "searchPage";
     }
