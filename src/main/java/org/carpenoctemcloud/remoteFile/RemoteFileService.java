@@ -2,6 +2,7 @@ package org.carpenoctemcloud.remoteFile;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import org.carpenoctemcloud.configuration.ConfigurationConstants;
 import org.carpenoctemcloud.indexing.IndexedFile;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -64,5 +65,16 @@ public class RemoteFileService {
                                                WHERE search_vector @@ websearch_to_tsquery(:search)
                                                LIMIT :limit OFFSET :offset;
                                       """, source, new RemoteFileMapper());
+    }
+
+    public Optional<RemoteFile> getRemoteFileByID(int id) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("id", id);
+        List<RemoteFile> result =
+                template.query("SELECT * FROM remote_file WHERE id=:id LIMIT 1;", source,
+                               new RemoteFileMapper());
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(result.getFirst());
     }
 }

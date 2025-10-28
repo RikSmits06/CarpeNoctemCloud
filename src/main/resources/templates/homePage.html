@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <title>Carpe Noctem Cloud</title>
+</head>
+<body>
+<div class="flex-column d-flex text-center p-5">
+    <div class="d-flex flex-row justify-content-center">
+        <h1>Welcome to Carpe Noctem Cloud</h1>
+    </div>
+    <div class="d-flex flex-row justify-content-center">
+
+        <p>Carpe Noctem Cloud (CNC) is a rudimentary clone of UT Cloud. It indexes various file
+            servers
+            located
+            around campus and allows searching and downloading from one place. After finding a file
+            one
+            wishes to download, an HTML file will be downloaded which contains a redirect to the
+            file
+            itself. Opening the HTML file will prompt to download and voilà! you have successfully
+            used
+            CNC.</p>
+    </div>
+
+    <div class="d-flex flex-row justify-content-center">
+        <button onclick="window.location.href='/search'" class="btn btn-primary">Start searching
+        </button>
+    </div>
+</div>
+
+</body>
+</html>
