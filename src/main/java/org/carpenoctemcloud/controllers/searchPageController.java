@@ -56,26 +56,4 @@ public class searchPageController {
 
         return "searchPage";
     }
-
-    /**
-     * The redirect-file created for the specific id of a RemoteFile.
-     * Is meant to be downloaded from not seen by the user.
-     *
-     * @param model The model of the Thymeleaf ssr.
-     * @param id    The id of the RemoteFile.
-     * @return The downloadable file or a 400 error if the id doesn't match a RemoteFile.
-     */
-    @GetMapping({"/redirect-file/{id}", "/redirect-file/{id}/"})
-    public String downloadFile(Model model, @PathVariable int id) {
-        Optional<RemoteFile> file = service.getRemoteFileByID(id);
-
-        if (file.isEmpty()) {
-            logger.warn("Invalid redirect-file accessed with id={}.", id);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File ID does not exist.");
-        }
-
-        model.addAttribute("resultFile", file.get());
-
-        return "redirectFile";
-    }
 }
