@@ -32,10 +32,12 @@
             <div class="flex-column justify-content-center w-75">
                 <div class="border-1 border border-black" th:each="result : ${results}">
                     <p th:text="${result.name()}"></p>
-                    <a th:href="'/redirect-file/WINDOWS/' + ${result.id()}"
-                       th:download="${result.id()}+'.url'">Windows</a>
-                    <a th:href="'/redirect-file/' + ${result.id()}"
-                       th:download="${result.id()}+'.html'">Universal (semi-broken)</a>
+                    <div class="d-flex flex-row justify-content-evenly">
+                        <a th:href="'/redirect-file/WINDOWS/' + ${result.id()}"
+                           th:download="'urlArchive'+${result.id()}+'.zip'">Windows</a>
+                        <a th:href="'/redirect-file/' + ${result.id()}"
+                           th:download="${result.id()}+'.html'">Universal (semi-broken)</a>
+                    </div>
                 </div>
             </div>
         </div>

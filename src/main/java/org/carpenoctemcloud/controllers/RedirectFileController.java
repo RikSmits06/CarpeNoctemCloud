@@ -1,6 +1,11 @@
 package org.carpenoctemcloud.controllers;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.carpenoctemcloud.redirectFiles.RedirectFileCreator;
 import org.carpenoctemcloud.redirectFiles.RedirectFileFactory;
 import org.carpenoctemcloud.redirectFiles.RedirectFilePlatform;
@@ -8,7 +13,10 @@ import org.carpenoctemcloud.remoteFile.RemoteFile;
 import org.carpenoctemcloud.remoteFile.RemoteFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,18 +64,35 @@ public class RedirectFileController {
      *
      * @param platform The platform to build the file for.
      * @param id       The id of the RemoteFile.
-     * @return The downloadable file or a 400 error if the id doesn't match a RemoteFile.
+     * @return The downloadable file or a 404 error if the id doesn't match a RemoteFile.
      */
     @GetMapping({"/{platform}/{id}", "/{platform}/{id}/"})
-    public ResponseEntity<String> downloadFile(@PathVariable RedirectFilePlatform platform,
-                                               @PathVariable int id) {
-        Optional<RemoteFile> file = fileService.getRemoteFileByID(id);
-        if (file.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given file does not exist.");
+    public ResponseEntity<InputStreamResource> downloadFile(
+            @PathVariable RedirectFilePlatform platform, @PathVariable int id) {
+        Optional<RemoteFile> fileOpt = fileService.getRemoteFileByID(id);
+        if (fileOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Given file does not exist.");
         }
 
-        RedirectFileCreator fileCreator = RedirectFileFactory.getFileCreater(platform);
-        String content = fileCreator.createFileContent(file.get().downloadURL());
-        return ResponseEntity.ok().body(content);
+        RemoteFile file = fileOpt.get();
+        RedirectFileCreator fileCreator = RedirectFileFactory.getFileCreator(platform);
+        String content = fileCreator.createFileContent(file.downloadURL());
+
+        // Trying to zip the redirect file so that it won't add weird extension while downloading.
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try (ZipOutputStream zipStream = new ZipOutputStream(byteArrayOutputStream)) {
+            zipStream.putNextEntry(new ZipEntry(file.name() + fileCreator.getFileExtension()));
+            zipStream.write(content.getBytes());
+            zipStream.closeEntry();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                              "Error creating zip file.");
+        }
+
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                                          "attachment; filename=linkArchive" + file.id() + ".zip")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM).body(new InputStreamResource(
+                        new ByteArrayInputStream(byteArrayOutputStream.toByteArray())));
     }
 }
