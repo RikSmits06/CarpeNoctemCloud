@@ -14,12 +14,21 @@
                   method="get"
                   id="searchForm">
                 <label hidden="hidden" for="inputQuery"></label><input
-                    class="form-control m-0 w-75 h-100 rounded-end-0"
+                    class="form-control m-0 w-60 h-100 rounded-end-0"
                     th:value="${query}"
                     placeholder="search..."
                     type="search" name="query"
                     id="inputQuery">
-                <label hidden="hidden" for="inputOffset"></label><input class="m-0 w-25 h-100"
+                <label>
+                    <select name="cat"
+                            class="form-select m-0 w-20 h-100 rounded-start-0 rounded-end-0">
+                        <option value="" th:selected="${currentCategory==null}">none...</option>
+                        <option th:each="cat : ${categories}"
+                                th:selected="${currentCategory == cat.id()}" th:text="${cat.name()}"
+                                th:value="${cat.id()}"></option>
+                    </select>
+                </label>
+                <label hidden="hidden" for="inputOffset"></label><input class="m-0 w-20 h-100"
                                                                         type="number"
                                                                         name="offset"
                                                                         th:value="0"

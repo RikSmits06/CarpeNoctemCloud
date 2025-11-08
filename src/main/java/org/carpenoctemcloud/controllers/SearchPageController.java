@@ -1,5 +1,6 @@
 package org.carpenoctemcloud.controllers;
 
+import org.carpenoctemcloud.category.CategoryService;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,15 +18,18 @@ import static org.carpenoctemcloud.configuration.ConfigurationConstants.MAX_FETC
 @RequestMapping("/search")
 public class SearchPageController {
 
-    final RemoteFileService service;
+    private final RemoteFileService fileService;
+    private final CategoryService categoryService;
 
     /**
      * Constructor of the search page controller.
      *
-     * @param service The RemoteFileService used to interact with the RemoteFile table.
+     * @param fileService     The RemoteFileService used to interact with the RemoteFile table.
+     * @param categoryService The CategoryService used to show the user the available categories to filter.
      */
-    public SearchPageController(RemoteFileService service) {
-        this.service = service;
+    public SearchPageController(RemoteFileService fileService, CategoryService categoryService) {
+        this.fileService = fileService;
+        this.categoryService = categoryService;
     }
 
     /**
@@ -39,13 +43,17 @@ public class SearchPageController {
     @GetMapping({"", "/"})
     public String searchPage(Model model,
                              @RequestParam(required = false, defaultValue = "") String query,
-                             @RequestParam(required = false, defaultValue = "0") Integer offset) {
+                             @RequestParam(required = false, defaultValue = "0") Integer offset,
+                             @RequestParam(required = false, defaultValue = "", name = "cat")
+                             Integer categoryID) {
         offset = (offset > 0) ? offset : 0;
 
         model.addAttribute("query", query);
         model.addAttribute("offset", offset);
         model.addAttribute("maxFetchSize", MAX_FETCH_SIZE);
-        model.addAttribute("results", service.searchRemoteFiles(query, offset));
+        model.addAttribute("results", fileService.searchRemoteFiles(query, offset, categoryID));
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("currentCategory", categoryID);
 
         return "searchPage";
     }

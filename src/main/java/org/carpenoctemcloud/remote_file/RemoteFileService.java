@@ -61,26 +61,35 @@ public class RemoteFileService {
      * Searches for RemoteFiles matching the search parameter.
      * The list is at most equal to the max fetch size set in {@link ConfigurationConstants}.
      *
-     * @param search The search parameter.
-     * @param offset The offset of the search.
+     * @param search     The search parameter, can be null or empty.
+     * @param offset     The offset of the search.
+     * @param categoryID The id of the category to search can be null.
      * @return The list of remote files matching the input.
      */
-    public List<RemoteFile> searchRemoteFiles(String search, int offset) {
-        SqlParameterSource source =
-                new MapSqlParameterSource().addValue("offset", offset).addValue("search", search)
-                        .addValue("limit", ConfigurationConstants.MAX_FETCH_SIZE);
-
-        if (search == null || search.isBlank()) {
-            return template.query("""
-                                          SELECT * FROM remote_file LIMIT :limit OFFSET :offset;
-                                          """, source, new RemoteFileMapper());
+    public List<RemoteFile> searchRemoteFiles(String search, int offset, Integer categoryID) {
+        if (search.isBlank()) {
+            search = null;
         }
 
+        SqlParameterSource source =
+                new MapSqlParameterSource().addValue("offset", offset).addValue("search", search)
+                        .addValue("limit", ConfigurationConstants.MAX_FETCH_SIZE)
+                        .addValue("cid", categoryID);
+
         return template.query("""
-                                      SELECT *, ts_rank(search_vector, websearch_to_tsquery(:search)) AS rankings FROM remote_file
-                                               WHERE search_vector @@ websearch_to_tsquery(:search)
-                                               ORDER BY rankings DESC
-                                               LIMIT :limit OFFSET :offset;
+                                      select *, ts_rank(search_vector, websearch_to_tsquery(:search)) AS rankings
+                                      from remote_file
+                                      where (case
+                                                 when (cast(:cid as integer) is not null)
+                                                     then category_id = :cid
+                                                 else true
+                                          end)
+                                        and (case
+                                                 when (cast(:search as text) is not null)
+                                                     then search_vector @@ websearch_to_tsquery(:search)
+                                                 else true end)
+                                      order by rankings desc
+                                      limit :limit offset :offset;
                                       """, source, new RemoteFileMapper());
     }
 
