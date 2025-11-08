@@ -35,6 +35,7 @@ public class ServerIndexerSMB implements ServerIndexer {
             config = new BaseConfiguration(true);
         } catch (CIFSException e) {
             listener.OnErrorWhileIndexing(e);
+            listener.onIndexingComplete();
             return;
         }
 
@@ -47,6 +48,7 @@ public class ServerIndexerSMB implements ServerIndexer {
             shares = host.listFiles();
         } catch (MalformedURLException | SmbException e) {
             listener.OnErrorWhileIndexing(e);
+            listener.onIndexingComplete();
             return;
         }
 
@@ -57,6 +59,8 @@ public class ServerIndexerSMB implements ServerIndexer {
                 listener.OnErrorWhileIndexing(e);
             }
         }
+
+        listener.onIndexingComplete();
     }
 
     private void walkDirectory(SmbFile dir, IndexingListener listener) {

@@ -18,4 +18,9 @@ public interface IndexingListener {
      * @param exception The exception which was thrown while indexing or connecting to the server.
      */
     void OnErrorWhileIndexing(Exception exception);
+
+    /**
+     * When the ServerIndexer has no more files to index, this can be called.
+     */
+    void onIndexingComplete();
 }

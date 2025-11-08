@@ -30,4 +30,12 @@ public class IndexingListenerImpl implements IndexingListener {
     public void OnErrorWhileIndexing(Exception exception) {
         logger.warn(exception.getMessage());
     }
+
+    /**
+     * When the ServerIndexer has no more files to index, this can be called.
+     */
+    @Override
+    public void onIndexingComplete() {
+
+    }
 }
