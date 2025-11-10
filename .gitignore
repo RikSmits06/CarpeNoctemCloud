@@ -36,3 +36,4 @@ database.mv.db
 database.trace.db
 out
 docs
+.venv
