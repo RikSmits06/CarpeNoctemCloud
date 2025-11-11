@@ -1,17 +1,13 @@
 package org.carpenoctemcloud.tasks;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.time.Instant;
+import org.carpenoctemcloud.index_task_log.IndexTaskLogService;
 import org.carpenoctemcloud.indexing.IndexingListener;
-import org.carpenoctemcloud.indexing.IndexingListenerImpl;
+import org.carpenoctemcloud.indexing_listeners.IndexingListenerImpl;
 import org.carpenoctemcloud.indexing.ServerIndexer;
-import org.carpenoctemcloud.indexing.ServerIndexerSMB;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.format.annotation.DurationFormat;
-import org.springframework.format.datetime.standard.DurationFormatterUtils;
+import org.carpenoctemcloud.smb.ServerIndexerSMB;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,17 +17,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class IndexingTask {
-    private final Logger logger = LoggerFactory.getLogger(IndexingTask.class);
-
     private final RemoteFileService remoteFileService;
+    private final IndexTaskLogService logService;
 
     /**
      * Constructor for the indexing task, Requires remoteFileService to save the indexed files.
      *
      * @param remoteFileService The remoteFileService handling db requests.
      */
-    public IndexingTask(RemoteFileService remoteFileService) {
+    public IndexingTask(RemoteFileService remoteFileService, IndexTaskLogService logService) {
         this.remoteFileService = remoteFileService;
+        this.logService = logService;
     }
 
 
@@ -48,17 +44,11 @@ public class IndexingTask {
         Timestamp startTime = Timestamp.from(Instant.now());
 
         for (String smbServer : smbServers) {
-            logger.info("Indexing SMB server: \"{}\".", smbServer);
             ServerIndexer indexer = new ServerIndexerSMB(smbServer);
             indexer.indexServer(listener);
-            logger.info("Finished indexing the SMB server: \"{}\"", smbServer);
         }
 
         Timestamp endTime = Timestamp.from(Instant.now());
-        Duration duration =
-                Duration.between(startTime.toLocalDateTime(), endTime.toLocalDateTime());
-        String durationFormatted =
-                DurationFormatterUtils.print(duration, DurationFormat.Style.COMPOSITE);
-        logger.info("Finished indexing in {}.", durationFormatted);
+        logService.addIndexLog(startTime, endTime, listener.getTotalFilesIndexed());
     }
 }

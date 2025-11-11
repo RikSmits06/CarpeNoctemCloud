@@ -3,13 +3,15 @@ package org.carpenoctemcloud.indexing;
 /**
  * Interface for classes which receive the files from indexing.
  */
-public interface IndexingListener {
+public abstract class IndexingListener {
+    private long totalFilesIndexed = 0;
+
     /**
      * Function which is called when a new file is indexed.
      *
      * @param file The file which was indexed by the ServerIndexer.
      */
-    void onNewFileIndexed(IndexedFile file);
+    abstract protected void onNewFileIndexed(IndexedFile file);
 
     /**
      * When the ServerIndexer has an error, the error will be given to the listener. For logging purposes.
@@ -17,10 +19,32 @@ public interface IndexingListener {
      *
      * @param exception The exception which was thrown while indexing or connecting to the server.
      */
-    void OnErrorWhileIndexing(Exception exception);
+    abstract protected void onErrorWhileIndexing(Exception exception);
 
     /**
      * When the ServerIndexer has no more files to index, this can be called.
      */
-    void onIndexingComplete();
+    abstract protected void onIndexingComplete();
+
+    /**
+     * Calls the onNewFileIndexed event for the listener and makes sure other things are done as well.
+     *
+     * @param file The file that got indexed.
+     */
+    final public void fireNewFileIndexedEvent(IndexedFile file) {
+        this.totalFilesIndexed++;
+        this.onNewFileIndexed(file);
+    }
+
+    final public void fireErrorEvent(Exception exception) {
+        this.onErrorWhileIndexing(exception);
+    }
+
+    final public void fireIndexingCompleteEvent() {
+        this.onIndexingComplete();
+    }
+
+    final public long getTotalFilesIndexed() {
+        return totalFilesIndexed;
+    }
 }

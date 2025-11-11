@@ -1,4 +1,4 @@
-package org.carpenoctemcloud.indexing;
+package org.carpenoctemcloud.smb;
 
 import java.net.MalformedURLException;
 import jcifs.CIFSContext;
@@ -9,6 +9,9 @@ import jcifs.context.BaseContext;
 import jcifs.smb.NtlmPasswordAuthenticator;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import org.carpenoctemcloud.indexing.IndexedFile;
+import org.carpenoctemcloud.indexing.IndexingListener;
+import org.carpenoctemcloud.indexing.ServerIndexer;
 
 
 /**
@@ -34,8 +37,8 @@ public class ServerIndexerSMB implements ServerIndexer {
         try {
             config = new BaseConfiguration(true);
         } catch (CIFSException e) {
-            listener.OnErrorWhileIndexing(e);
-            listener.onIndexingComplete();
+            listener.fireErrorEvent(e);
+            listener.fireIndexingCompleteEvent();
             return;
         }
 
@@ -47,8 +50,8 @@ public class ServerIndexerSMB implements ServerIndexer {
         try (SmbFile host = new SmbFile("smb://" + this.serverURL, context)) {
             shares = host.listFiles();
         } catch (MalformedURLException | SmbException e) {
-            listener.OnErrorWhileIndexing(e);
-            listener.onIndexingComplete();
+            listener.fireErrorEvent(e);
+            listener.fireIndexingCompleteEvent();
             return;
         }
 
@@ -56,17 +59,17 @@ public class ServerIndexerSMB implements ServerIndexer {
             try (SmbFile file = new SmbFile(share.toString(), context)) {
                 walkDirectory(file, listener);
             } catch (MalformedURLException e) {
-                listener.OnErrorWhileIndexing(e);
+                listener.fireErrorEvent(e);
             }
         }
 
-        listener.onIndexingComplete();
+        listener.fireIndexingCompleteEvent();
     }
 
     private void walkDirectory(SmbFile dir, IndexingListener listener) {
         try {
             if (dir.isFile()) {
-                listener.OnErrorWhileIndexing(
+                listener.fireErrorEvent(
                         new IllegalArgumentException("Given dir was not an actual directory."));
                 return;
             }
@@ -78,10 +81,10 @@ public class ServerIndexerSMB implements ServerIndexer {
                 }
 
                 final String fileURL = "file://///" + entry.toString().replaceAll("^smb://", "");
-                listener.onNewFileIndexed(new IndexedFile(entry.getName(), fileURL));
+                listener.fireNewFileIndexedEvent(new IndexedFile(entry.getName(), fileURL));
             }
         } catch (SmbException e) {
-            listener.OnErrorWhileIndexing(e);
+            listener.fireErrorEvent(e);
         }
     }
 }

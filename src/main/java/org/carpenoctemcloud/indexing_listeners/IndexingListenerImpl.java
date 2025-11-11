@@ -1,5 +1,7 @@
-package org.carpenoctemcloud.indexing;
+package org.carpenoctemcloud.indexing_listeners;
 
+import org.carpenoctemcloud.indexing.IndexedFile;
+import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Prints out all the indexed files to standard out.
  */
-public class IndexingListenerImpl implements IndexingListener {
+public class IndexingListenerImpl extends IndexingListener {
 
     private final RemoteFileService fileService;
     private final Logger logger = LoggerFactory.getLogger(IndexingListenerImpl.class);
@@ -27,7 +29,7 @@ public class IndexingListenerImpl implements IndexingListener {
     }
 
     @Override
-    public void OnErrorWhileIndexing(Exception exception) {
+    public void onErrorWhileIndexing(Exception exception) {
         logger.warn(exception.getMessage());
     }
 
