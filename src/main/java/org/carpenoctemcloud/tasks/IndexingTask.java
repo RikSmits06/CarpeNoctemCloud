@@ -8,6 +8,7 @@ import org.carpenoctemcloud.indexing.ServerIndexer;
 import org.carpenoctemcloud.indexing_listeners.IndexingListenerImpl;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.carpenoctemcloud.smb.ServerIndexerSMB;
+import org.carpenoctemcloud.smb.SmbConstants;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -39,12 +40,9 @@ public class IndexingTask {
     public void indexAllServers() {
         IndexingListener listener = new IndexingListenerImpl(remoteFileService);
 
-        String[] smbServers = {"spitfire.student.utwente.nl", "stroopwafel.student.utwente.nl",
-                "univac.student.utwente.nl", "campuslaan53.student.utwente.nl"};
-
         Timestamp startTime = Timestamp.from(Instant.now());
 
-        for (String smbServer : smbServers) {
+        for (String smbServer : SmbConstants.smbServers) {
             ServerIndexer indexer = new ServerIndexerSMB(smbServer);
             indexer.indexServer(listener);
         }
