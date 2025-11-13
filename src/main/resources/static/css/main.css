@@ -1,3 +1,5 @@
+@import "bootstrap.min.css";
+
 html {
     overflow-x: hidden;
     max-width: 100vw;
@@ -7,4 +9,16 @@ body {
     max-width: 100vw;
     padding: 0;
     margin: 0;
+}
+
+.download {
+    font-size: 0.9rem;
+}
+
+.result {
+    background: var(--bs-light-bg-subtle);
+}
+
+.result:hover {
+    background: #b65a96;
 }
