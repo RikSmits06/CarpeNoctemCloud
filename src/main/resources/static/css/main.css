@@ -5,13 +5,8 @@ html, body {
     max-width: 100vw;
 }
 
-body * {
+body {
     box-sizing: border-box;
-}
-
-/* --- General Layout --- */
-.search-form input[type="search"] {
-    min-width: 50%;
 }
 
 .category-select {
@@ -20,12 +15,7 @@ body * {
     padding: 0.5rem 0.75rem;
 }
 
-/* Ensure consistent max width */
-.container-fluid > * {
-    width: 100%;
-}
 
-/* --- Results --- */
 .result {
     background: var(--bs-light-bg-subtle);
     transition: all 0.15s ease-in-out;
@@ -50,7 +40,6 @@ body * {
     transform: scale(1.1);
 }
 
-/* --- Tooltip --- */
 .customTooltip {
     position: relative;
     display: inline-flex;
