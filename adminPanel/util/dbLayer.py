@@ -41,8 +41,7 @@ class DbLayer:
         cur.execute("""
                     select started, ended, files_indexed
                     from index_task_log
-                    order by started desc
-                    limit 10;
+                    order by started desc limit 10;
                     """)
         result = cur.fetchall()
         cur.close()
@@ -53,9 +52,21 @@ class DbLayer:
         cur.execute("""
                     select started, ended, files_deleted
                     from delete_task_log
-                    order by started desc
-                    limit 10;
+                    order by started desc limit 10;
                     """)
         result = cur.fetchall()
+        cur.close()
+        return result
+
+    def valid_login(self, email, password):
+        cur: cursor = self._conn.cursor()
+        cur.execute("""select exists(select
+                                     from account
+                                     where email = %s
+                                       and cast(sha256(cast(%s || '|' || salt as bytea)) as text) =
+                                           password
+                                       and email_confirmed
+                                       and is_admin);""", (email, password))
+        result = cur.fetchone()[0]
         cur.close()
         return result
