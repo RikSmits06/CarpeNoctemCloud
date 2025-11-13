@@ -39,16 +39,57 @@
         </div>
         <div class="d-flex justify-content-center flex-row">
             <div class="flex-column justify-content-center w-75">
-                <div class="border-1 border border-black my-1 p-1 px-2 rounded-1 result" th:each="result : ${results}">
-                    <p class="mb-0" th:text="${result.name()}"></p>
-                    <div class="d-flex flex-row justify-content-evenly">
-                        <a class="download" th:href="'/redirect-file/WINDOWS/' + ${result.id()}"
-                           download>Windows</a>
-                        <a class="download" th:href="'/redirect-file/MAC/' + ${result.id()}"
-                           download>macOS</a>
-                        <a class="download" th:href="'/redirect-file/' + ${result.id()}"
-                           th:download="${result.id()}+'.html'">Universal (semi-broken)</a>
+                <div class="border-1 border border-black my-1 p-1 px-2 rounded-1 result row"
+                     th:each="result : ${results}">
+                    <div class="col-auto align-content-center" th:if="${!result.categoryID().isEmpty()}">
+                        <img th:if="${result.categoryID().get() == 1}" th:src="@{/img/film.svg}" alt="file logo"
+                             class="fileImage">
+                        <img th:if="${result.categoryID().get() == 2}" th:src="@{/img/music.svg}" alt="file logo"
+                             class="fileImage">
+                        <img th:if="${result.categoryID().get() == 3}" th:src="@{/img/image.svg}" alt="file logo"
+                             class="fileImage">
                     </div>
+                    <div class="col-auto justify-content-center align-content-center" th:if="${result.categoryID().isEmpty()}">
+                        <img th:src="@{/img/file.svg}" class="fileImage" alt="file">
+                    </div>
+                    <p class="mb-0 col-9" th:text="${result.name()}"></p>
+
+                    <div class="d-flex flex-row justify-content-evenly align-content-center col-2 p-1 gap-2">
+
+                        <!-- Universal Download Icon -->
+                        <div class="customTooltip d-flex align-items-center">
+                            <a class="download align-content-center"
+                               th:href="'/redirect-file/' + ${result.id()}"
+                               th:download="${result.id()} + '.html'">
+                                <img th:src="@{/img/download.svg}" alt="Universal download" class="fileImage platformImage" height="24">
+                            </a>
+                            <span class="tooltiptext">Universal Download (semi-broken)</span>
+                        </div>
+
+                        <!-- Windows Download -->
+                        <div class="customTooltip d-flex align-items-center">
+                            <a class="download align-content-center"
+                               th:href="'/redirect-file/WINDOWS/' + ${result.id()}"
+                               download>
+                                <img th:src="@{/img/windows.svg}" alt="Windows" class="fileImage platformImage" height="24">
+                            </a>
+                            <span class="tooltiptext">Download for Windows</span>
+                        </div>
+
+                        <!-- MacOS Download -->
+                        <div class="customTooltip d-flex align-items-center">
+                            <a class="download align-content-center"
+                               th:href="'/redirect-file/MAC/' + ${result.id()}"
+                               download>
+                                <img th:src="@{/img/mac.svg}" alt="macOS" class="fileImage platformImage" height="24">
+                            </a>
+                            <span class="tooltiptext">Download for MacOS</span>
+                        </div>
+
+                    </div>
+
+
+                </div>
                 </div>
             </div>
         </div>

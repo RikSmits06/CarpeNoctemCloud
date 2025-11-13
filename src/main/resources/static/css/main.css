@@ -17,8 +17,56 @@ body {
 
 .result {
     background: var(--bs-light-bg-subtle);
+    transition: all ease 0.1s;
 }
 
 .result:hover {
-    background: #b65a96;
+    background: #544f54;
+    box-shadow: 0 0 0 0.2rem rgba(59, 48, 61, 0.4);
 }
+
+.fileImage {
+    filter: invert(1);
+    height: 24px;
+}
+
+.platformImage {
+    transition: all ease 0.1s;
+}
+
+.platformImage:hover {
+    filter: invert(0.9);
+    transform: scale(1.1);
+}
+
+.customTooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.customTooltip .tooltiptext {
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 6px;
+    position: absolute;
+    z-index: 10;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.customTooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+
