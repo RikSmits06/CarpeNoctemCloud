@@ -32,3 +32,10 @@ of your chosen reverse proxy to configure it properly. It is best to enforce htt
 used in the application. Make sure that the database cannot be accessed from the internet. By
 default, Postgres disallows connections from locations other than localhost but it does not hurt to
 double-check.
+
+## Features
+
+### Shell Commands
+
+The main server has a spring shell terminal. To see the commands type `help` and `help <command` to
+learn more.
