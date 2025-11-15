@@ -73,3 +73,7 @@ body {
     visibility: visible;
     opacity: 1;
 }
+
+.category {
+    width: 12rem;
+}

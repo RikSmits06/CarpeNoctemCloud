@@ -109,4 +109,13 @@ public class RemoteFileService {
         }
         return Optional.of(result.getFirst());
     }
+
+    /**
+     * Gets the total number of RemoteFile entries in the database.
+     *
+     * @return The total number of files in the database.
+     */
+    public int getTotalFiles() {
+        return template.query("select count(*) from remote_file;", new TotalFilesMapper()).getFirst();
+    }
 }
