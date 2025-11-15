@@ -79,7 +79,6 @@ public class ServerIndexerSMB implements ServerIndexer {
                     walkDirectory(entry, listener);
                     continue;
                 }
-
                 final String fileURL = "file://///" + entry.toString().replaceAll("^smb://", "");
                 listener.fireNewFileIndexedEvent(new IndexedFile(entry.getName(), fileURL));
             }
