@@ -36,7 +36,7 @@ public class IndexingTask {
     /**
      * Indexes all the servers every so often to keep the cache up to date.
      */
-    @Scheduled(cron = "0 0 3 */2 * *")
+    @Scheduled(cron = "0 10 12 * * *")
     public void indexAllServers() {
         IndexingListener listener = new IndexingListenerImpl(remoteFileService);
 

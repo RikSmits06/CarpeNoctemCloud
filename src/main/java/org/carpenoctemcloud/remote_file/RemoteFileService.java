@@ -109,4 +109,18 @@ public class RemoteFileService {
         }
         return Optional.of(result.getFirst());
     }
+
+    /**
+     * Gets the total number of RemoteFile entries in the database.
+     *
+     * @return The total number of files in the database.
+     */
+    public int getTotalFiles(Integer categoryID) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("cid", categoryID);
+        return template.query("""
+                select count(*) from remote_file where (case when (cast(:cid as integer) is not null)
+                                                                     then category_id = :cid
+                                                                 else true
+                                                          end);""", source ,new TotalFilesMapper()).getFirst();
+    }
 }
