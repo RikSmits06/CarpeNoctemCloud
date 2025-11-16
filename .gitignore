@@ -37,3 +37,4 @@ database.trace.db
 out
 docs
 .venv
+logs

@@ -2,8 +2,9 @@ package org.carpenoctemcloud;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.shell.jline.InteractiveShellRunner;
 
-@SpringBootTest
+@SpringBootTest(properties = {"spring.shell.interactive.enabled=false", "spring.shell.script.enabled=false"})
 class CarpeNoctemCloudApplicationTests {
 
     /**
