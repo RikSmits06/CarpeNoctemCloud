@@ -37,5 +37,5 @@ double-check.
 
 ### Shell Commands
 
-The main server has a spring shell terminal. To see the commands type `help` and `help <command` to
-learn more.
+The main server has a spring shell terminal.
+To see the commands type `help` and `help <command>` to learn more.

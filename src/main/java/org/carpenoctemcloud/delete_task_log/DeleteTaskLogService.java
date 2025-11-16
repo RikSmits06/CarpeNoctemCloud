@@ -1,8 +1,8 @@
 package org.carpenoctemcloud.delete_task_log;
 
 import java.sql.Timestamp;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DeleteTaskLogService {
-    private final JdbcTemplate template;
+    private final NamedParameterJdbcTemplate template;
 
     /**
      * Initiates the service.
      *
      * @param template The template needed for querying the database.
      */
-    public DeleteTaskLogService(JdbcTemplate template) {
+    public DeleteTaskLogService(NamedParameterJdbcTemplate template) {
         this.template = template;
     }
 

@@ -1,8 +1,8 @@
 package org.carpenoctemcloud.index_task_log;
 
 import java.sql.Timestamp;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class IndexTaskLogService {
-    private final JdbcTemplate template;
+    private final NamedParameterJdbcTemplate template;
 
     /**
      * Creates a new IndexTaskLogService.
      *
      * @param template The template used to query the database.
      */
-    public IndexTaskLogService(JdbcTemplate template) {
+    public IndexTaskLogService(NamedParameterJdbcTemplate template) {
         this.template = template;
     }
 

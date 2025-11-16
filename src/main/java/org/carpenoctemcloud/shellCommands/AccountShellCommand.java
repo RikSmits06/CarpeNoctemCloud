@@ -1,5 +1,6 @@
-package org.carpenoctemcloud.account;
+package org.carpenoctemcloud.shellCommands;
 
+import org.carpenoctemcloud.account.AccountService;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
