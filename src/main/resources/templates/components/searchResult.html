@@ -1,5 +1,5 @@
 <!--/*@thymesVar id="result" type="org.carpenoctemcloud.remote_file.RemoteFile"*/-->
-<div th:fragment="result (resultRef)" class="border-1 border border-black justify-content-evenly my-1 p-2 rounded-1 result row">
+<div th:fragment="result (resultRef)" class="border-1 border border-black justify-content-evenly my-1 p-2 rounded-1 result row g-0">
     <div class="col-auto align-content-center"
          th:if="${!result.categoryID().isEmpty()}">
         <img th:if="${result.categoryID().get() == 1}" th:src="@{/img/film.svg}"
