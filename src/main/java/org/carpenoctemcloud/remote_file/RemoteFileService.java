@@ -1,6 +1,7 @@
 package org.carpenoctemcloud.remote_file;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.carpenoctemcloud.configuration.ConfigurationConstants;
@@ -46,15 +47,7 @@ public class RemoteFileService {
      * @param indexedFile The file to add to the database.
      */
     public void addRemoteFile(IndexedFile indexedFile) {
-        SqlParameterSource source = new MapSqlParameterSource().addValue("url", indexedFile.url())
-                .addValue("name", indexedFile.filename());
-
-        template.update("""
-                                 INSERT INTO remote_file (name, download_url, last_indexed)
-                                                                 VALUES (:name, :url, now())
-                                                                 ON CONFLICT (download_url) DO UPDATE
-                                                                   SET last_indexed = excluded.last_indexed;
-                                """, source);
+        this.addRemoteFiles(new ArrayList<>(List.of(indexedFile)));
     }
 
     /**
@@ -108,5 +101,24 @@ public class RemoteFileService {
             return Optional.empty();
         }
         return Optional.of(result.getFirst());
+    }
+
+    public void addRemoteFiles(List<IndexedFile> indexedFiles) {
+        SqlParameterSource[] sources = new SqlParameterSource[indexedFiles.size()];
+
+        for (int i = 0; i < sources.length; i++) {
+            IndexedFile file = indexedFiles.get(i);
+            SqlParameterSource source =
+                    new MapSqlParameterSource().addValue("name", file.filename())
+                            .addValue("url", file.url());
+            sources[i] = source;
+        }
+
+        template.batchUpdate("""
+                                      INSERT INTO remote_file (name, download_url, last_indexed)
+                                                                      VALUES (:name, :url, now())
+                                                                      ON CONFLICT (download_url) DO UPDATE
+                                                                        SET last_indexed = excluded.last_indexed;
+                                     """, sources);
     }
 }
