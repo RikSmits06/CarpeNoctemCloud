@@ -7,6 +7,9 @@
     <title>Carpe Noctem Cloud</title>
 </head>
 <body data-bs-theme="dark">
+<!-- nav -->
+<div th:replace="components/header :: header (activePage = 'home')"></div>
+
 <div class="flex-column d-flex text-center p-5 justify-content-center">
     <div class="d-flex flex-row justify-content-center">
         <h1>Welcome to Carpe Noctem Cloud</h1>
@@ -58,6 +61,9 @@
         </button>
     </div>
 </div>
+
+<!-- footer -->
+<div th:replace="components/footer :: footer"></div>
 
 </body>
 </html>
