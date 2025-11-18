@@ -5,7 +5,7 @@ import java.time.Instant;
 import org.carpenoctemcloud.index_task_log.IndexTaskLogService;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.indexing.ServerIndexer;
-import org.carpenoctemcloud.indexing_listeners.IndexingListenerImpl;
+import org.carpenoctemcloud.indexing_listeners.IndexingListenerBatch;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.carpenoctemcloud.smb.ServerIndexerSMB;
 import org.carpenoctemcloud.smb.SmbConstants;
@@ -36,9 +36,9 @@ public class IndexingTask {
     /**
      * Indexes all the servers every so often to keep the cache up to date.
      */
-    @Scheduled(cron = "0 10 12 * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     public void indexAllServers() {
-        IndexingListener listener = new IndexingListenerImpl(remoteFileService);
+        IndexingListener listener = new IndexingListenerBatch(remoteFileService);
 
         Timestamp startTime = Timestamp.from(Instant.now());
 
