@@ -13,44 +13,46 @@
     <!-- content -->
     <div class="my-3">
         <!-- search -->
-        <div class="d-flex flex-row justify-content-center">
-            <form class="d-flex flex-row justify-content-center w-75" action="/search"
+        <div class="my-2 w-75 mx-auto">
+            <form class="d-flex flex-row justify-content-center" action="/search"
                   method="get"
                   id="searchForm">
-                <label hidden="hidden" for="inputQuery"></label><input
-                    class="form-control m-0 h-100 rounded-end-0"
-                    th:value="${query}"
-                    placeholder="Search..."
-                    type="search" name="query"
-                    id="inputQuery">
+                <label hidden="hidden" for="inputOffset"></label>
+                <input class="m-0 w-20 h-100"
+                       type="number"
+                       name="offset"
+                       th:value="0"
+                       id="inputOffset"
+                       hidden="hidden">
+                <label hidden="hidden" for="inputQuery"></label>
+                <input
+                        class="form-control rounded-end-0"
+                        th:value="${query}"
+                        placeholder="Search..."
+                        type="search" name="query"
+                        id="inputQuery">
                 <label class="category">
                     <select name="cat"
-                            class="form-select select m-0 h-100 rounded-start-0 rounded-end-0">
+                            class="form-select select rounded-start-0 rounded-end-0">
                         <option value="" th:selected="${currentCategory==null}">none...</option>
                         <option th:each="cat : ${categories}"
                                 th:selected="${currentCategory == cat.id()}" th:text="${cat.name()}"
                                 th:value="${cat.id()}"></option>
                     </select>
                 </label>
-                <label hidden="hidden" for="inputOffset"></label><input class="m-0 w-20 h-100"
-                                                                        type="number"
-                                                                        name="offset"
-                                                                        th:value="0"
-                                                                        id="inputOffset"
-                                                                        hidden="hidden">
                 <input class="btn btn-primary rounded-start-0" type="submit" value="Submit">
             </form>
         </div>
         <!-- results -->
-        <div class="mt-3 d-flex flex-row justify-content-center">
-            <div class="flex-column justify-content-center w-75">
+        <div class="my-2 w-75 mx-auto">
+            <div class="flex-column justify-content-center">
                 <div th:each="result : ${results}">
                     <div th:replace="components/searchResult :: result (resultRef = result)"></div>
                 </div>
             </div>
         </div>
         <!-- pagination -->
-        <div class="d-flex justify-content-center my-2 mb-2">
+        <div class="my-2 mb-2 w-75 mx-auto d-flex justify-content-center">
             <form action="/search" th:unless="${offset==0}">
                 <label>
                     <input type="number" name="offset" hidden="hidden"
