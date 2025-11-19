@@ -10,6 +10,9 @@ def password_entered():
     st.session_state["is_logged_in"] = db.valid_login(email, password)
 
 
+# Rendering page.
+st.set_page_config(page_title="CNC Admin Panel", layout="centered")
+
 if st.session_state.get("is_logged_in", False):
     pg = st.navigation(
         {
@@ -19,7 +22,8 @@ if st.session_state.get("is_logged_in", False):
                 st.Page("index_task_page.py", title="Index Task"),
                 st.Page("cleanup_task_page.py", title="Cleanup Task")],
             "Requests":
-                [st.Page("daily_request_page.py", title="Daily Requests")]
+                [st.Page("daily_request_page.py", title="Daily Requests"),
+                 st.Page("endpoint_history_page.py", title="Endpoint History")]
         })
     st.title(pg.title)
     pg.run()

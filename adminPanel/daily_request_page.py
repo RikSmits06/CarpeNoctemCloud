@@ -16,7 +16,12 @@ if len(data) != 0:
 
     df = pd.DataFrame(data)
 
-    fig = px.pie(df, values="Hits", names="Endpoint")
+    total_hits = sum(data["Hits"])
+
+    fig = px.pie(df, values="Hits", names="Endpoint",
+                 title=f"Hits/Endpoint-distribution")
+    st.write(f"Total hits on {today} is {total_hits}.")
     st.plotly_chart(fig)
+
 else:
     st.write("No data on this day.")

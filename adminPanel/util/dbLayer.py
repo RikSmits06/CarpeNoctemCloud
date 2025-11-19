@@ -71,6 +71,27 @@ class DbLayer:
         cur.close()
         return result
 
+    def get_log_endpoints(self):
+        cur: cursor = self._conn.cursor()
+        cur.execute("""
+                    select distinct endpoint
+                    from request_log;
+                    """)
+        result = cur.fetchall()
+        cur.close()
+        return result
+
+    def get_hits_of_endpoint(self, endpoint: str):
+        cur: cursor = self._conn.cursor()
+        cur.execute("""
+                    select day, count
+                    from request_log
+                    where endpoint = %s;
+                    """, (endpoint,))
+        result = cur.fetchall()
+        cur.close()
+        return result
+
     def request_of_day(self, date):
         cur: cursor = self._conn.cursor()
         cur.execute("""
