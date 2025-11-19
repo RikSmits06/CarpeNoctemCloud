@@ -12,16 +12,20 @@ def password_entered():
 
 if st.session_state.get("is_logged_in", False):
     pg = st.navigation(
-        {"Database": [
-            st.Page("database_page.py", title="Database")],
+        {
+            "Database": [
+                st.Page("database_page.py", title="Database")],
             "Tasks": [
                 st.Page("index_task_page.py", title="Index Task"),
-                st.Page("cleanup_task_page.py", title="Cleanup Task")]
+                st.Page("cleanup_task_page.py", title="Cleanup Task")],
+            "Requests":
+                [st.Page("daily_request_page.py", title="Daily Requests")]
         })
     st.title(pg.title)
     pg.run()
 else:
     with st.form("Credentials"):
-        st.text_input("Email", key="text_input_email")
-        st.text_input("Password", key="text_input_password", type="password")
+        st.text_input("Email", key="text_input_email", autocomplete="email")
+        st.text_input("Password", key="text_input_password", type="password",
+                      autocomplete="current-password")
         st.form_submit_button("Log in", on_click=password_entered)

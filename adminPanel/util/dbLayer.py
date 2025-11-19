@@ -70,3 +70,14 @@ class DbLayer:
         result = cur.fetchone()[0]
         cur.close()
         return result
+
+    def request_of_day(self, date):
+        cur: cursor = self._conn.cursor()
+        cur.execute("""
+                    select endpoint, count
+                    from request_log
+                    where day = %s;
+                    """, (date,))
+        result = cur.fetchall()
+        cur.close()
+        return result
