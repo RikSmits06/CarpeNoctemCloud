@@ -6,7 +6,6 @@ import org.carpenoctemcloud.ftp.ServerIndexerFTP;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.indexing.ServerIndexer;
 import org.carpenoctemcloud.indexing_listeners.IndexingListenerBatch;
-import org.carpenoctemcloud.indexing_listeners.IndexingListenerPrint;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.carpenoctemcloud.smb.ServerIndexerSMB;
 import org.springframework.format.annotation.DurationFormat;
@@ -47,7 +46,7 @@ public class ScanServerCommand {
     @ShellMethod(key = "scanFTP", value = "Scans an FTP server.")
     public String scanFTP(@ShellOption(value = "Url of the server to index.") String url) {
         ServerIndexer indexer = new ServerIndexerFTP(url);
-        IndexingListener listener = new IndexingListenerPrint();
+        IndexingListener listener = new IndexingListenerBatch(fileService);
         return timeIndexing(url, indexer, listener);
     }
 

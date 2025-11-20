@@ -3,7 +3,6 @@ package org.carpenoctemcloud.ftp;
 import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPReply;
 import org.carpenoctemcloud.indexing.IndexedFile;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.indexing.ServerIndexer;
@@ -26,31 +25,38 @@ public class ServerIndexerFTP implements ServerIndexer {
 
         try {
             client.connect(url);
-            int replyCode = client.getReplyCode();
-            if (!FTPReply.isPositiveCompletion(replyCode)) {
-                client.disconnect();
-                listener.fireErrorEvent(
-                        new Exception("Error code for ftp completion: " + replyCode));
-                listener.fireIndexingCompleteEvent();
-                return;
-            }
-
-            client.login("h.j.smits@student.utwente.nl", "PASS");
+            client.enterLocalPassiveMode();
+            client.login("anonymous", "CNCloud@");
         } catch (IOException e) {
             listener.fireErrorEvent(e);
             listener.fireIndexingCompleteEvent();
             return;
         }
 
+        walkDir(client, listener, "/");
+        listener.fireIndexingCompleteEvent();
 
         try {
+            client.logout();
+            client.disconnect();
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void walkDir(FTPClient client, IndexingListener listener, String dir) {
+        try {
+            client.changeWorkingDirectory(dir);
             for (FTPFile file : client.listFiles()) {
-                IndexedFile foundFile = new IndexedFile(file.getName(), file.getLink());
+                if (file.isDirectory()) {
+                    walkDir(client, listener, dir + file.getName() + "/");
+                    continue;
+                }
+                IndexedFile foundFile =
+                        new IndexedFile(file.getName(), "ftp://" + url + dir + file.getName());
                 listener.fireNewFileIndexedEvent(foundFile);
             }
         } catch (IOException e) {
             listener.fireErrorEvent(e);
         }
-        listener.fireIndexingCompleteEvent();
     }
 }
