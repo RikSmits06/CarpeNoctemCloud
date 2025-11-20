@@ -8,6 +8,7 @@ import org.carpenoctemcloud.indexing.ServerIndexer;
 import org.carpenoctemcloud.indexing_listeners.IndexingListenerBatch;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.carpenoctemcloud.smb.ServerIndexerSMB;
+import org.carpenoctemcloud.smb.SmbConstants;
 import org.springframework.format.annotation.DurationFormat;
 import org.springframework.format.datetime.standard.DurationFormatterUtils;
 import org.springframework.shell.standard.ShellComponent;
@@ -44,6 +45,18 @@ public class ScanServerCommand {
         ServerIndexer indexer = new ServerIndexerSMB(url);
         IndexingListener listener = new IndexingListenerBatch(fileService, directoryService);
         return timedIndexing(url, indexer, listener);
+    }
+
+    /**
+     * Scans all known smb servers manually.
+     */
+    @ShellMethod(key = "scanAllSMB", value = "Scans all SMB servers.")
+    public void ScanAllSMB() {
+        IndexingListener listener = new IndexingListenerBatch(fileService, directoryService);
+        for (String url : SmbConstants.SMB_SERVERS) {
+            ServerIndexer indexer = new ServerIndexerSMB(url);
+            System.out.println(timedIndexing(url, indexer, listener));
+        }
     }
 
     private String timedIndexing(String url, ServerIndexer indexer, IndexingListener listener) {
