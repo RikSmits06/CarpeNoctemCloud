@@ -17,7 +17,8 @@ if st.session_state.get("is_logged_in", False):
     pg = st.navigation(
         {
             "Database": [
-                st.Page("database_page.py", title="Database")],
+                st.Page("database_page.py", title="Database"),
+                st.Page("file_distribution_page.py", title="File Distribution")],
             "Tasks": [
                 st.Page("index_task_page.py", title="Index Task"),
                 st.Page("cleanup_task_page.py", title="Cleanup Task")],
