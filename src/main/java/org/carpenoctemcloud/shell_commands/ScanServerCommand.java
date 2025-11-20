@@ -2,7 +2,6 @@ package org.carpenoctemcloud.shell_commands;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import org.carpenoctemcloud.ftp.ServerIndexerFTP;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.indexing.ServerIndexer;
 import org.carpenoctemcloud.indexing_listeners.IndexingListenerBatch;
@@ -40,17 +39,10 @@ public class ScanServerCommand {
     public String ScanSMB(@ShellOption(value = "Url of the server to index.") String url) {
         ServerIndexer indexer = new ServerIndexerSMB(url);
         IndexingListener listener = new IndexingListenerBatch(fileService);
-        return timeIndexing(url, indexer, listener);
+        return timedIndexing(url, indexer, listener);
     }
 
-    @ShellMethod(key = "scanFTP", value = "Scans an FTP server.")
-    public String scanFTP(@ShellOption(value = "Url of the server to index.") String url) {
-        ServerIndexer indexer = new ServerIndexerFTP(url);
-        IndexingListener listener = new IndexingListenerBatch(fileService);
-        return timeIndexing(url, indexer, listener);
-    }
-
-    private String timeIndexing(String url, ServerIndexer indexer, IndexingListener listener) {
+    private String timedIndexing(String url, ServerIndexer indexer, IndexingListener listener) {
         LocalDateTime start = LocalDateTime.now();
         indexer.indexServer(listener);
         LocalDateTime end = LocalDateTime.now();
