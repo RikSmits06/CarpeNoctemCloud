@@ -63,7 +63,7 @@ public class RedirectFileController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File ID does not exist.");
         }
 
-        model.addAttribute("resultFile", file.get());
+        model.addAttribute("url", fileService.getDownloadURL(file.get().id()));
 
         return "redirectFile";
     }
@@ -86,7 +86,7 @@ public class RedirectFileController {
 
         RemoteFile file = fileOpt.get();
         RedirectFileCreator fileCreator = RedirectFileFactory.getFileCreator(platform);
-        String content = fileCreator.createFileContent(file);
+        String content = fileCreator.createFileContent(fileService.getDownloadURL(file.id()));
 
         // Trying to zip the redirect file so that it won't add weird extension while downloading.
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

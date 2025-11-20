@@ -1,7 +1,5 @@
 package org.carpenoctemcloud.redirect_files;
 
-import org.carpenoctemcloud.remote_file.RemoteFile;
-
 /**
  * Creates an .url file for Windows users.
  */
@@ -12,10 +10,10 @@ public class WindowsRedirectFileCreator implements RedirectFileCreator {
      */
     WindowsRedirectFileCreator() {
     }
-    
+
     @Override
-    public String createFileContent(RemoteFile file) {
-        return "[InternetShortcut]\n" + "URL=" + file.name() + "\n";
+    public String createFileContent(String url) {
+        return "[InternetShortcut]\n" + "URL=" + url + "\n";
     }
 
     /**

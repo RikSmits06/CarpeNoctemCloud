@@ -103,6 +103,22 @@ public class RemoteFileService {
         return Optional.of(result.getFirst());
     }
 
+    public String getDownloadURL(long fileID) {
+        MapSqlParameterSource source = new MapSqlParameterSource().addValue("fileID", fileID);
+        return template.query("""
+                                      select distinct download_prefix || '://' || host || path || rf.name as url
+                                      from remote_file rf,
+                                           directory dir,
+                                           server ser
+                                      where rf.id = :fileID
+                                        and rf.directory_id = dir.id
+                                        and ser.id = dir.server_id;
+                                      """, source, rs -> {
+            rs.next();
+            return rs.getString("url");
+        });
+    }
+
     /**
      * Adds a list of indexed files to the database by collecting them in a batch.
      *
