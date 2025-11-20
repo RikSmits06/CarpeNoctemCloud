@@ -25,7 +25,8 @@ public class ScanServerCommand {
     /**
      * Creates a new object to store the shell command definitions.
      *
-     * @param fileService The service used to store files.
+     * @param fileService      The service used to store files.
+     * @param directoryService Service given to the listeners to create directories.
      */
     public ScanServerCommand(RemoteFileService fileService, DirectoryService directoryService) {
         this.fileService = fileService;

@@ -21,7 +21,8 @@ public class IndexingListenerBatch extends IndexingListener {
     /**
      * Creates a new IndexingListenerBatch and instantiates the underlying buffer.
      *
-     * @param fileService The service to save the found files to.
+     * @param fileService      The service to save the found files to.
+     * @param directoryService The service used to create new directories.
      */
     public IndexingListenerBatch(RemoteFileService fileService, DirectoryService directoryService) {
         this.fileService = fileService;

@@ -3,7 +3,13 @@ package org.carpenoctemcloud.indexing_listeners;
 import org.carpenoctemcloud.indexing.IndexedFile;
 import org.carpenoctemcloud.indexing.IndexingListener;
 
+/**
+ * Debugging listener to print out the indexed files to stdout.
+ */
 public class IndexingListenerPrint extends IndexingListener {
+    /**
+     * Creates a new listener which prints out to stdout.
+     */
     public IndexingListenerPrint() {
     }
 
@@ -14,12 +20,12 @@ public class IndexingListenerPrint extends IndexingListener {
      */
     @Override
     protected void onNewFileIndexed(IndexedFile file) {
-        System.out.println("Indexed " + file.filename() + "(" + file.host() + "): " + file.path());
+        System.out.println("Indexed " + file.filename() + " (" + file.host() + "): " + file.path());
     }
 
     @Override
     protected void onDirectoryIndexed(String serverName, String path) {
-
+        System.out.println("Indexed directory " + path + " (" + serverName + ")");
     }
 
     /**

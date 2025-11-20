@@ -19,6 +19,12 @@ public abstract class IndexingListener {
      */
     abstract protected void onNewFileIndexed(IndexedFile file);
 
+    /**
+     * Function which is called when a new directory is found.
+     *
+     * @param serverName The host name of the server.
+     * @param path       The path to the directory.
+     */
     abstract protected void onDirectoryIndexed(String serverName, String path);
 
     /**
@@ -44,6 +50,12 @@ public abstract class IndexingListener {
         this.onNewFileIndexed(file);
     }
 
+    /**
+     * Fires the NewDirectoryEvent for when a new directory is discovered.
+     *
+     * @param serverName The name of the server to fire it for.
+     * @param path       The path to the folder.
+     */
     final public void fireNewDirectoryEvent(String serverName, String path) {
         this.onDirectoryIndexed(serverName, path);
     }

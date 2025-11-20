@@ -28,6 +28,7 @@ public class IndexingTask {
      *
      * @param remoteFileService The remoteFileService handling db requests.
      * @param logService        The log service used to store the indexing task result.
+     * @param directoryService  The service given to the index listeners.
      */
     public IndexingTask(RemoteFileService remoteFileService, IndexTaskLogService logService,
                         DirectoryService directoryService) {

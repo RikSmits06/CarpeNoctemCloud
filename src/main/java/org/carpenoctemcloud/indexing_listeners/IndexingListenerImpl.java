@@ -19,7 +19,8 @@ public class IndexingListenerImpl extends IndexingListener {
     /**
      * Constructor of the IndexingListenerImpl. Requires RemoteFileService to save indexed files.
      *
-     * @param fileService The RemoteFileService.
+     * @param fileService      The RemoteFileService.
+     * @param directoryService The directoryService to create new directories.
      */
     public IndexingListenerImpl(RemoteFileService fileService, DirectoryService directoryService) {
         this.fileService = fileService;

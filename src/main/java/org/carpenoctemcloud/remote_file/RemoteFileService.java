@@ -103,6 +103,12 @@ public class RemoteFileService {
         return Optional.of(result.getFirst());
     }
 
+    /**
+     * Gets the url to download from.
+     *
+     * @param fileID The id of the file.
+     * @return The url to the external resource.
+     */
     public String getDownloadURL(long fileID) {
         MapSqlParameterSource source = new MapSqlParameterSource().addValue("fileID", fileID);
         return template.query("""
