@@ -102,3 +102,17 @@ class DbLayer:
         result = cur.fetchall()
         cur.close()
         return result
+
+    def file_distribution(self):
+        cur: cursor = self._conn.cursor()
+        cur.execute("""
+                    select ser.host, count(*)
+                    from directory dir,
+                         remote_file rf,
+                         server ser
+                    where rf.directory_id = dir.id
+                      and dir.server_id = ser.id
+                    group by ser.host;""")
+        result = cur.fetchall()
+        cur.close()
+        return result
