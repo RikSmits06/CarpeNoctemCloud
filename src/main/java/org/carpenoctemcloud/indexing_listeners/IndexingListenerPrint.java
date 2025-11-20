@@ -17,6 +17,11 @@ public class IndexingListenerPrint extends IndexingListener {
         System.out.println("Indexed " + file.filename() + "(" + file.host() + "): " + file.path());
     }
 
+    @Override
+    protected void onDirectoryIndexed(String serverName, String path) {
+
+    }
+
     /**
      * When the ServerIndexer has an error, the error will be given to the listener. For logging purposes.
      * The ServerIndexer will terminate or continue by itself.

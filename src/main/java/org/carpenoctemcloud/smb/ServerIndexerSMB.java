@@ -73,7 +73,8 @@ public class ServerIndexerSMB implements ServerIndexer {
                         new IllegalArgumentException("Given dir was not an actual directory."));
                 return;
             }
-
+            listener.fireNewDirectoryEvent(serverURL, dir.getPath()
+                    .substring(("smb://" + serverURL).length()));
             for (SmbFile entry : dir.listFiles()) {
                 if (entry.isDirectory()) {
                     walkDirectory(entry, listener);

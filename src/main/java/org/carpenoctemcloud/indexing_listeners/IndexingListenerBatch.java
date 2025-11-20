@@ -1,6 +1,7 @@
 package org.carpenoctemcloud.indexing_listeners;
 
 import java.util.ArrayList;
+import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.indexing.IndexedFile;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
@@ -15,14 +16,16 @@ public class IndexingListenerBatch extends IndexingListener {
     private final int MAX_BUFFER_SIZE = 1000;
     private final ArrayList<IndexedFile> buffer;
     private final RemoteFileService fileService;
+    private final DirectoryService directoryService;
 
     /**
      * Creates a new IndexingListenerBatch and instantiates the underlying buffer.
      *
      * @param fileService The service to save the found files to.
      */
-    public IndexingListenerBatch(RemoteFileService fileService) {
+    public IndexingListenerBatch(RemoteFileService fileService, DirectoryService directoryService) {
         this.fileService = fileService;
+        this.directoryService = directoryService;
         logger = LoggerFactory.getLogger(IndexingListenerBatch.class);
         buffer = new ArrayList<>(MAX_BUFFER_SIZE);
         buffer.ensureCapacity(MAX_BUFFER_SIZE);
@@ -40,6 +43,11 @@ public class IndexingListenerBatch extends IndexingListener {
         if (buffer.size() >= MAX_BUFFER_SIZE) {
             this.writeBuffer();
         }
+    }
+
+    @Override
+    protected void onDirectoryIndexed(String serverName, String path) {
+        directoryService.addDirectory(serverName, path);
     }
 
     /**

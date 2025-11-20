@@ -2,6 +2,7 @@ package org.carpenoctemcloud.tasks;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.index_task_log.IndexTaskLogService;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.indexing.ServerIndexer;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 public class IndexingTask {
     private final RemoteFileService remoteFileService;
     private final IndexTaskLogService logService;
+    private final DirectoryService directoryService;
 
     /**
      * Constructor for the indexing task, Requires remoteFileService to save the indexed files.
@@ -27,9 +29,11 @@ public class IndexingTask {
      * @param remoteFileService The remoteFileService handling db requests.
      * @param logService        The log service used to store the indexing task result.
      */
-    public IndexingTask(RemoteFileService remoteFileService, IndexTaskLogService logService) {
+    public IndexingTask(RemoteFileService remoteFileService, IndexTaskLogService logService,
+                        DirectoryService directoryService) {
         this.remoteFileService = remoteFileService;
         this.logService = logService;
+        this.directoryService = directoryService;
     }
 
 
@@ -38,7 +42,7 @@ public class IndexingTask {
      */
     @Scheduled(cron = "0 0 3 * * *")
     public void indexAllServers() {
-        IndexingListener listener = new IndexingListenerBatch(remoteFileService);
+        IndexingListener listener = new IndexingListenerBatch(remoteFileService, directoryService);
 
         Timestamp startTime = Timestamp.from(Instant.now());
 

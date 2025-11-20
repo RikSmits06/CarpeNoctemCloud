@@ -2,6 +2,7 @@ package org.carpenoctemcloud.shell_commands;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.indexing.ServerIndexer;
 import org.carpenoctemcloud.indexing_listeners.IndexingListenerBatch;
@@ -19,14 +20,16 @@ import org.springframework.shell.standard.ShellOption;
 @ShellComponent
 public class ScanServerCommand {
     private final RemoteFileService fileService;
+    private final DirectoryService directoryService;
 
     /**
      * Creates a new object to store the shell command definitions.
      *
      * @param fileService The service used to store files.
      */
-    public ScanServerCommand(RemoteFileService fileService) {
+    public ScanServerCommand(RemoteFileService fileService, DirectoryService directoryService) {
         this.fileService = fileService;
+        this.directoryService = directoryService;
     }
 
     /**
@@ -38,7 +41,7 @@ public class ScanServerCommand {
     @ShellMethod(key = "scanSMB", value = "Scans an SMB server.")
     public String ScanSMB(@ShellOption(value = "Url of the server to index.") String url) {
         ServerIndexer indexer = new ServerIndexerSMB(url);
-        IndexingListener listener = new IndexingListenerBatch(fileService);
+        IndexingListener listener = new IndexingListenerBatch(fileService, directoryService);
         return timedIndexing(url, indexer, listener);
     }
 
