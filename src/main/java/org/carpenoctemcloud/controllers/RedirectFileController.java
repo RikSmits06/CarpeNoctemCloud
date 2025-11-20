@@ -86,7 +86,7 @@ public class RedirectFileController {
 
         RemoteFile file = fileOpt.get();
         RedirectFileCreator fileCreator = RedirectFileFactory.getFileCreator(platform);
-        String content = fileCreator.createFileContent(file.downloadURL());
+        String content = fileCreator.createFileContent(file);
 
         // Trying to zip the redirect file so that it won't add weird extension while downloading.
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

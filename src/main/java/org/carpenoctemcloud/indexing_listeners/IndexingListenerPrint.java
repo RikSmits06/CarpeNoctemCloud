@@ -14,7 +14,7 @@ public class IndexingListenerPrint extends IndexingListener {
      */
     @Override
     protected void onNewFileIndexed(IndexedFile file) {
-        System.out.println("Indexed (" + file.filename() + "): " + file.url());
+        System.out.println("Indexed " + file.filename() + "(" + file.host() + "): " + file.path());
     }
 
     /**

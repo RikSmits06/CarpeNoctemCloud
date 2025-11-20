@@ -115,15 +115,20 @@ public class RemoteFileService {
             IndexedFile file = indexedFiles.get(i);
             SqlParameterSource source =
                     new MapSqlParameterSource().addValue("name", file.filename())
-                            .addValue("url", file.url());
+                            .addValue("server_name", file.host()).addValue("path", file.path());
             sources[i] = source;
         }
 
         template.batchUpdate("""
-                                      INSERT INTO remote_file (name, download_url, last_indexed)
-                                                                      VALUES (:name, :url, now())
-                                                                      ON CONFLICT (download_url) DO UPDATE
-                                                                        SET last_indexed = excluded.last_indexed;
+                                     with dir as (insert into directory (path, server_id)
+                                         values (:path, (select id from server where host = :server_name limit 1))
+                                         on conflict on constraint unique_server_path
+                                             do update set server_id = directory.server_id returning id)
+                                     insert
+                                     into remote_file(name, directory_id)
+                                     select :name, dir.id
+                                     from dir
+                                     on conflict on constraint unique_file do update set last_indexed = now();
                                      """, sources);
     }
 }

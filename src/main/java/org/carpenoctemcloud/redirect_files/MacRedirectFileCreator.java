@@ -1,5 +1,7 @@
 package org.carpenoctemcloud.redirect_files;
 
+import org.carpenoctemcloud.remote_file.RemoteFile;
+
 /**
  * Class which implements the RedirectFileCreator interface.
  * Is used to make redirect files for the Mac operating system.
@@ -12,21 +14,15 @@ public class MacRedirectFileCreator implements RedirectFileCreator {
     MacRedirectFileCreator() {
     }
 
-    /**
-     * Creates the content of a file to redirect towards the resource at the url.
-     *
-     * @param url The url to redirect the user to.
-     * @return The contents of the file in a string.
-     */
     @Override
-    public String createFileContent(String url) {
+    public String createFileContent(RemoteFile file) {
         return """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
                 <plist version="1.0">
                 <dict>
                 <key>URL</key>
-                <string>""" + url + "</string></dict></plist>";
+                <string>""" + file.name() + "</string></dict></plist>";
     }
 
     /**

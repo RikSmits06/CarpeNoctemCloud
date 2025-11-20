@@ -1,5 +1,7 @@
 package org.carpenoctemcloud.redirect_files;
 
+import org.carpenoctemcloud.remote_file.RemoteFile;
+
 /**
  * The purpose of this interface is to create classes which handle the link file of a specific OS.
  * For instance, windows has .url files while macOS has .webloc files.
@@ -8,10 +10,10 @@ public interface RedirectFileCreator {
     /**
      * Creates the content of a file to redirect towards the resource at the url.
      *
-     * @param url The url to redirect the user to.
+     * @param file The file to redirect the user to.
      * @return The contents of the file in a string.
      */
-    String createFileContent(String url);
+    String createFileContent(RemoteFile file);
 
     /**
      * Used to create the right extension of the file.

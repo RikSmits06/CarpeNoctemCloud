@@ -19,8 +19,8 @@ public class RemoteFileMapper implements RowMapper<RemoteFile> {
 
     @Override
     public RemoteFile mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        return new RemoteFile(resultSet.getInt("id"), resultSet.getString("name"),
-                              resultSet.getString("download_url"),
+        return new RemoteFile(resultSet.getLong("id"), resultSet.getString("name"),
+                              resultSet.getLong("directory_id"),
                               resultSet.getTimestamp("last_indexed"), Optional.ofNullable(
                 resultSet.getObject("category_id", Integer.class)));
     }
