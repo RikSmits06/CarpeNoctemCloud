@@ -20,37 +20,11 @@
         <img th:src="@{/img/file.svg}" class="fileImage" alt="file">
     </div>
 
-    <p class="mb-0 col-9 align-content-center" th:text="${result.name()}"></p>
+    <p class="mb-0 col-10 align-content-center" th:text="${result.name()}"></p>
 
-    <div class="d-flex flex-row justify-content-evenly align-content-center col-2 p-1 gap-2">
-        <div class="customTooltip d-flex align-items-center">
-            <a class="download align-content-center"
-               th:href="'/redirect-file/' + ${result.id()}"
-               th:download="${result.id()} + '.html'">
-                <img th:src="@{/img/download.svg}" alt="Universal download"
-                     class="fileImage platformImage" height="24">
-            </a>
-            <span class="tooltiptext">Universal Download (semi-broken)</span>
-        </div>
-        <div class="customTooltip d-flex align-items-center">
-            <a class="download align-content-center"
-               th:href="'/redirect-file/WINDOWS/' + ${result.id()}"
-               download>
-                <img th:src="@{/img/windows.svg}" alt="Windows"
-                     class="fileImage platformImage"
-                     height="24">
-            </a>
-            <span class="tooltiptext">Download for Windows</span>
-        </div>
-        <div class="customTooltip d-flex align-items-center">
-            <a class="download align-content-center"
-               th:href="'/redirect-file/MAC/' + ${result.id()}"
-               download>
-                <img th:src="@{/img/mac.svg}" alt="macOS"
-                     class="fileImage platformImage" height="24">
-            </a>
-            <span class="tooltiptext">Download for MacOS</span>
-        </div>
+    <div class="col-auto align-content-center customTooltip">
+        <img th:src="@{/img/arrow-right.svg}" class="fileImage" alt="arrow">
+        <span class="tooltiptext">View file</span>
     </div>
 </div>
 </html>

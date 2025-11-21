@@ -33,13 +33,55 @@
                 </div>
                 <h3 class="col align-content-center mb-0" th:text="${resultFile.name()}"></h3>
             </div>
-            <strong>Server: </strong>
+            <strong>Server:</strong>
             <p th:text="${serverURL}"></p>
+
+            <strong>Download:</strong>
+            <div class="d-flex flex-row p-1">
+                <ul class="list-unstyled p-0 m-0">
+                    <!-- Universal Download -->
+                    <li class="m-3">
+                        <a class="d-flex align-items-center gap-3 text-reset download"
+                           th:href="'/redirect-file/' + ${resultFile.id()}"
+                           th:download="${resultFile.id()} + '.html'">
+                            <!-- Fixed-width icon container -->
+                            <div class="d-flex justify-content-center"
+                                 style="width:32px;">
+                                <img th:src="@{/img/download.svg}" class="fileImage platformImage" alt="Universal download">
+                            </div>
+                            <span>Universal Download (semi-broken)</span>
+                        </a>
+                    </li>
+                    <!-- Windows -->
+                    <li class="m-3">
+                        <a class="d-flex align-items-center gap-3 download text-reset"
+                           th:href="'/redirect-file/WINDOWS/' + ${resultFile.id()}"
+                           download>
+                            <div class="d-flex justify-content-center"
+                                 style="width:32px;">
+                                <img th:src="@{/img/windows.svg}" class="fileImage platformImage" alt="Windows">
+                            </div>
+                            <span>Download for Windows</span>
+                        </a>
+                    </li>
+                    <!-- Mac -->
+                    <li class="m-3">
+                        <a class="d-flex align-items-center gap-3 download text-reset"
+                           th:href="'/redirect-file/MAC/' + ${resultFile.id()}"
+                           download>
+                            <div class="d-flex justify-content-center"
+                                 style="width:32px;">
+                                <img th:src="@{/img/mac.svg}" class="fileImage platformImage" alt="macOS">
+                            </div>
+                            <span>Download for MacOS</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
     <!-- footer -->
     <div th:replace="components/footer :: footer"></div>
-
 </div>
 </body>
 </html>
