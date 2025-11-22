@@ -52,7 +52,7 @@ public class FileInspectController {
 
         RemoteFile file = fileOpt.get();
 
-        Server server = fileService.getServerOfFile(file.id());
+        Server server = fileService.getServerOfFile(id);
 
         model.addAttribute("resultFile", file);
         model.addAttribute("server", server);

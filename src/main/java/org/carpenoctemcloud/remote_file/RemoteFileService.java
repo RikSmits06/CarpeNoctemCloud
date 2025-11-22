@@ -156,6 +156,12 @@ public class RemoteFileService {
                                      """, sources);
     }
 
+    /**
+     * Gets the host of a certain file.
+     *
+     * @param fileID The id of the file.
+     * @return The string of the hostname of where the file is hosted.
+     */
     public Server getServerOfFile(long fileID) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("fileID", fileID);
 
@@ -164,10 +170,10 @@ public class RemoteFileService {
                                       from server ser,
                                            directory dir,
                                            remote_file rf
-                                      where rf.id = 1
+                                      where rf.id = :fileID
                                         and rf.directory_id = dir.id
                                         and dir.server_id = ser.id
                                       limit 1;
-                                      """, new ServerMapper()).getFirst();
+                                      """, source, new ServerMapper()).getFirst();
     }
 }

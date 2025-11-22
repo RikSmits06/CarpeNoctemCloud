@@ -19,4 +19,15 @@ public interface RedirectFileCreator {
      * @return The extension of the file with the dot. So for example ".url" or ".docx".
      */
     String getFileExtension();
+
+    /**
+     * If it is wise to compress the file before sending it to the client.
+     * This is used because some file extensions are renamed by the browser.
+     * For instance, .url gets replaced with.url.download which some people can't rename correctly.
+     *
+     * @return True by default but can be overridden to false.
+     */
+    default boolean compressFile() {
+        return true;
+    }
 }

@@ -11,5 +11,9 @@ public enum RedirectFilePlatform {
     /**
      * The Microsoft Windows operating system.
      */
-    WINDOWS
+    WINDOWS,
+    /**
+     * Used to open the file in VLC using a PLS file format.
+     */
+    VLC
 }

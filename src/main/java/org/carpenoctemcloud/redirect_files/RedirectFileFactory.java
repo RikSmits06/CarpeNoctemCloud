@@ -22,6 +22,9 @@ public class RedirectFileFactory {
             case WINDOWS -> {
                 return new WindowsRedirectFileCreator();
             }
+            case VLC -> {
+                return new VlcRedirectFileCreator();
+            }
             default -> throw new IllegalStateException("Unexpected value: " + platform);
         }
     }
