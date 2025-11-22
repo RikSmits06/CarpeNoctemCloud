@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import org.carpenoctemcloud.configuration.ConfigurationConstants;
 import org.carpenoctemcloud.indexing.IndexedFile;
+import org.carpenoctemcloud.server.Server;
+import org.carpenoctemcloud.server.ServerMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -92,7 +94,7 @@ public class RemoteFileService {
      * @param id The ID of the RemoteFile.
      * @return The RemoteFile or an empty optional if no RemoteFile exists.
      */
-    public Optional<RemoteFile> getRemoteFileByID(int id) {
+    public Optional<RemoteFile> getRemoteFileByID(long id) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("id", id);
         List<RemoteFile> result =
                 template.query("SELECT * FROM remote_file WHERE id=:id LIMIT 1;", source,
@@ -152,5 +154,20 @@ public class RemoteFileService {
                                      from dir
                                      on conflict on constraint unique_file do update set last_indexed = now();
                                      """, sources);
+    }
+
+    public Server getServerOfFile(long fileID) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("fileID", fileID);
+
+        return template.query("""
+                                      select ser.*
+                                      from server ser,
+                                           directory dir,
+                                           remote_file rf
+                                      where rf.id = 1
+                                        and rf.directory_id = dir.id
+                                        and dir.server_id = ser.id
+                                      limit 1;
+                                      """, new ServerMapper()).getFirst();
     }
 }

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset=" UTF-8">
+    <title>Carpe Noctem Cloud</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
+<!-- nav -->
+<div th:replace="components/header :: header (activePage = 'search')"></div>
+<!-- content -->
+<main class="my-3 flex-grow-1">
+    <div class="my-2 w-75 mx-auto">
+        <div class="row my-2">
+            <div class="col-auto align-content-center object-fit-contain"
+                 th:if="${!resultFile.categoryID().isEmpty()}">
+                <img th:if="${resultFile.categoryID().get() == 1}" th:src="@{/img/film.svg}"
+                     alt="file logo"
+                     class="fileImage">
+                <img th:if="${resultFile.categoryID().get() == 2}" th:src="@{/img/music.svg}"
+                     alt="file logo"
+                     class="fileImage">
+                <img th:if="${resultFile.categoryID().get() == 3}" th:src="@{/img/image.svg}"
+                     alt="file logo"
+                     class="fileImage">
+            </div>
+
+            <div class="col-auto justify-content-center align-content-center object-fit-contain"
+                 th:if="${resultFile.categoryID().isEmpty()}">
+                <img th:src="@{/img/file.svg}" class="fileImage" alt="file">
+            </div>
+            <h3 class="col align-content-center mb-0" th:text="${resultFile.name()}"></h3>
+        </div>
+        <strong>Server:</strong>
+        <p th:text="${server.host()}"></p>
+
+        <strong>Download:</strong>
+        <div class="d-flex flex-row p-1">
+            <ul class="list-unstyled p-0 m-0">
+                <!-- Universal Download -->
+                <li class="m-3">
+                    <a class="d-flex align-items-center gap-3 text-reset download"
+                       th:href="'/redirect-file/' + ${resultFile.id()}"
+                       th:download="${resultFile.id()} + '.html'">
+                        <!-- Fixed-width icon container -->
+                        <div class="d-flex justify-content-center"
+                             style="width:32px;">
+                            <img th:src="@{/img/download.svg}" class="fileImage platformImage"
+                                 alt="Universal download">
+                        </div>
+                        <span>Universal Download (semi-broken)</span>
+                    </a>
+                </li>
+                <!-- Windows -->
+                <li class="m-3">
+                    <a class="d-flex align-items-center gap-3 download text-reset"
+                       th:href="'/redirect-file/WINDOWS/' + ${resultFile.id()}"
+                       download>
+                        <div class="d-flex justify-content-center"
+                             style="width:32px;">
+                            <img th:src="@{/img/windows.svg}" class="fileImage platformImage"
+                                 alt="Windows">
+                        </div>
+                        <span>Download for Windows</span>
+                    </a>
+                </li>
+                <!-- Mac -->
+                <li class="m-3">
+                    <a class="d-flex align-items-center gap-3 download text-reset"
+                       th:href="'/redirect-file/MAC/' + ${resultFile.id()}"
+                       download>
+                        <div class="d-flex justify-content-center"
+                             style="width:32px;">
+                            <img th:src="@{/img/mac.svg}" class="fileImage platformImage"
+                                 alt="macOS">
+                        </div>
+                        <span>Download for macOS</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+<!-- footer -->
+<div th:replace="components/footer :: footer"></div>
+</body>
+</html>
