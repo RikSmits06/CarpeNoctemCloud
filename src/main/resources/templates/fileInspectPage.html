@@ -39,6 +39,19 @@
         <strong>Download:</strong>
         <div class="d-flex flex-row p-1">
             <ul class="list-unstyled p-0 m-0">
+                <!-- VLC -->
+                <li class="m-3">
+                    <a class="d-flex align-items-center gap-3 download text-reset"
+                       th:href="'/redirect-file/VLC/' + ${resultFile.id()}"
+                       download>
+                        <div class="d-flex justify-content-center"
+                             style="width:32px;">
+                            <img th:src="@{/img/vlc.svg}" class="fileImage platformImage"
+                                 alt="Windows">
+                        </div>
+                        <span>Download for VLC</span>
+                    </a>
+                </li>
                 <!-- Windows -->
                 <li class="m-3">
                     <a class="d-flex align-items-center gap-3 download text-reset"
