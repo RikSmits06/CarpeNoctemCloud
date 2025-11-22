@@ -156,6 +156,12 @@ public class RemoteFileService {
                                      """, sources);
     }
 
+    /**
+     * Gets the host of a certain file.
+     *
+     * @param fileID The id of the file.
+     * @return The string of the hostname of where the file is hosted.
+     */
     public Server getServerOfFile(long fileID) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("fileID", fileID);
 

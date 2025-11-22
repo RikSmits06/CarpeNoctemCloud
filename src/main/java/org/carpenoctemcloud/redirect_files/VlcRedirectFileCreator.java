@@ -2,7 +2,18 @@ package org.carpenoctemcloud.redirect_files;
 
 import java.util.Objects;
 
+/**
+ * Creates file content for vlc files. They open directly in vlc.
+ */
 public class VlcRedirectFileCreator implements RedirectFileCreator {
+
+    /**
+     * Creates a new VlcRedirectFileCreator, it does not use any dependencies.
+     */
+    public VlcRedirectFileCreator() {
+
+    }
+
     /**
      * Creates the content of a file to redirect towards the resource at the url.
      *
@@ -19,7 +30,7 @@ public class VlcRedirectFileCreator implements RedirectFileCreator {
         if (Objects.equals(protocol, "file")) {
             protocol = "smb";
         }
-        
+
         url = protocol + "://" + "anonymous:1234@" + split[1];
         return "[playlist]\n" + "File1=" + url + "\nNumberOfEntries=1";
     }
