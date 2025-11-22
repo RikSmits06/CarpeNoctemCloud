@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,28 +49,6 @@ public class RedirectFileController {
      * The redirect-file created for the specific id of a RemoteFile.
      * Is meant to be downloaded from not seen by the user.
      *
-     * @param model The model of the Thymeleaf ssr.
-     * @param id    The id of the RemoteFile.
-     * @return The downloadable file or a 400 error if the id doesn't match a RemoteFile.
-     */
-    @GetMapping({"/{id}", "/{id}/"})
-    public String universalFileDownload(Model model, @PathVariable int id) {
-        Optional<RemoteFile> file = fileService.getRemoteFileByID(id);
-
-        if (file.isEmpty()) {
-            logger.warn("Invalid redirect-file accessed with id={}.", id);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File ID does not exist.");
-        }
-
-        model.addAttribute("url", fileService.getDownloadURL(file.get().id()));
-
-        return "redirectFile";
-    }
-
-    /**
-     * The redirect-file created for the specific id of a RemoteFile.
-     * Is meant to be downloaded from not seen by the user.
-     *
      * @param platform The platform to build the file for.
      * @param id       The id of the RemoteFile.
      * @return The downloadable file or a 404 error if the id doesn't match a RemoteFile.
@@ -88,21 +65,30 @@ public class RedirectFileController {
         RedirectFileCreator fileCreator = RedirectFileFactory.getFileCreator(platform);
         String content = fileCreator.createFileContent(fileService.getDownloadURL(file.id()));
 
-        // Trying to zip the redirect file so that it won't add weird extension while downloading.
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (ZipOutputStream zipStream = new ZipOutputStream(byteArrayOutputStream)) {
-            zipStream.putNextEntry(new ZipEntry(file.name() + fileCreator.getFileExtension()));
-            zipStream.write(content.getBytes());
-            zipStream.closeEntry();
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              "Error creating zip file.");
+        ByteArrayInputStream output;
+
+        if (fileCreator.compressFile()) {
+            // Trying to zip the redirect file so that it won't add weird extension while downloading.
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            try (ZipOutputStream zipStream = new ZipOutputStream(byteArrayOutputStream)) {
+                zipStream.putNextEntry(new ZipEntry(file.name() + fileCreator.getFileExtension()));
+                zipStream.write(content.getBytes());
+                zipStream.closeEntry();
+                output = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            } catch (IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                                  "Error creating zip file.");
+            }
+        } else {
+            output = new ByteArrayInputStream(content.getBytes());
         }
 
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                                          "attachment; filename=linkArchive" + file.id() + ".zip")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM).body(new InputStreamResource(
-                        new ByteArrayInputStream(byteArrayOutputStream.toByteArray())));
+                                          "attachment; filename=linkArchive" + file.id() +
+                                                  (fileCreator.compressFile() ? ".zip" :
+                                                          fileCreator.getFileExtension()))
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(output));
     }
 }

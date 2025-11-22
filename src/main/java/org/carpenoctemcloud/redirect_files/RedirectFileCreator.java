@@ -19,4 +19,8 @@ public interface RedirectFileCreator {
      * @return The extension of the file with the dot. So for example ".url" or ".docx".
      */
     String getFileExtension();
+
+    default boolean compressFile() {
+        return true;
+    }
 }

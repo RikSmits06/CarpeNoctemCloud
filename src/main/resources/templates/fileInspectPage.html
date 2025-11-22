@@ -39,20 +39,6 @@
         <strong>Download:</strong>
         <div class="d-flex flex-row p-1">
             <ul class="list-unstyled p-0 m-0">
-                <!-- Universal Download -->
-                <li class="m-3">
-                    <a class="d-flex align-items-center gap-3 text-reset download"
-                       th:href="'/redirect-file/' + ${resultFile.id()}"
-                       th:download="${resultFile.id()} + '.html'">
-                        <!-- Fixed-width icon container -->
-                        <div class="d-flex justify-content-center"
-                             style="width:32px;">
-                            <img th:src="@{/img/download.svg}" class="fileImage platformImage"
-                                 alt="Universal download">
-                        </div>
-                        <span>Universal Download (semi-broken)</span>
-                    </a>
-                </li>
                 <!-- Windows -->
                 <li class="m-3">
                     <a class="d-flex align-items-center gap-3 download text-reset"

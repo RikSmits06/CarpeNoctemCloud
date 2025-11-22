@@ -164,10 +164,10 @@ public class RemoteFileService {
                                       from server ser,
                                            directory dir,
                                            remote_file rf
-                                      where rf.id = 1
+                                      where rf.id = :fileID
                                         and rf.directory_id = dir.id
                                         and dir.server_id = ser.id
                                       limit 1;
-                                      """, new ServerMapper()).getFirst();
+                                      """, source, new ServerMapper()).getFirst();
     }
 }
