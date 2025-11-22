@@ -22,8 +22,9 @@ public class DirectoryService {
 
     /**
      * Creates directory in the database.
+     *
      * @param serverName The name of the server, as in ftp.server.utwente for instance.
-     * @param path The path relative to the top level directory.
+     * @param path       The path relative to the top level directory.
      */
     public void addDirectory(String serverName, String path) {
         MapSqlParameterSource source =
