@@ -58,6 +58,7 @@ public class RedirectFileController {
             @PathVariable RedirectFilePlatform platform, @PathVariable int id) {
         Optional<RemoteFile> fileOpt = fileService.getRemoteFileByID(id);
         if (fileOpt.isEmpty()) {
+            logger.warn("Invalid file accessed with id={}.", id);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Given file does not exist.");
         }
 

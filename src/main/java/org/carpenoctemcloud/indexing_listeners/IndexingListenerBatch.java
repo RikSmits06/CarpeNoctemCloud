@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class IndexingListenerBatch extends IndexingListener {
     private final Logger logger;
-    private final int MAX_BUFFER_SIZE = 1000;
+    private final int maxBufferSize = 1000;
     private final ArrayList<IndexedFile> buffer;
     private final RemoteFileService fileService;
     private final DirectoryService directoryService;
@@ -28,8 +28,8 @@ public class IndexingListenerBatch extends IndexingListener {
         this.fileService = fileService;
         this.directoryService = directoryService;
         logger = LoggerFactory.getLogger(IndexingListenerBatch.class);
-        buffer = new ArrayList<>(MAX_BUFFER_SIZE);
-        buffer.ensureCapacity(MAX_BUFFER_SIZE);
+        buffer = new ArrayList<>(maxBufferSize);
+        buffer.ensureCapacity(maxBufferSize);
     }
 
     /**
@@ -41,7 +41,7 @@ public class IndexingListenerBatch extends IndexingListener {
     protected void onNewFileIndexed(IndexedFile file) {
         buffer.add(file);
 
-        if (buffer.size() >= MAX_BUFFER_SIZE) {
+        if (buffer.size() >= maxBufferSize) {
             this.writeBuffer();
         }
     }

@@ -10,6 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 /**
  * Interceptor used to log which endpoints are mainly being targeted.
  */
+@SuppressWarnings("NullableProblems")
 @Component
 public class RequestLogInterceptor implements HandlerInterceptor {
 
@@ -26,7 +27,7 @@ public class RequestLogInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, @Nullable Exception ex) throws Exception {
+                                Object handler, @Nullable Exception ex) {
         // We are only logging successful attempts as this gives the best view of the user flow.
         if (HttpStatusCode.valueOf(response.getStatus()).isError()) {
             return;
