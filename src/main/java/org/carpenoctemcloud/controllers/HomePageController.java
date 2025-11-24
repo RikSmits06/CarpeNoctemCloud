@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Controller for the homepage located at "/".
+ * Controller for the homepage located at "/". This is where the user should start looking.
  */
 @SuppressWarnings("SameReturnValue")
 @Controller
