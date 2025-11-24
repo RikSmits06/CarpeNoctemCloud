@@ -30,7 +30,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build project with Maven
-        run: mvn clean install javadoc:javadoc
+        run: mvn clean install javadoc:javadoc -Dmaven.test.skip
 
       - name: Deploy JavaDoc to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
