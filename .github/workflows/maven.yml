@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '21'
-          distribution: ''
+          distribution: 'temurin'
 
       - name: Build project with Maven
         run: mvn clean install javadoc:javadoc
