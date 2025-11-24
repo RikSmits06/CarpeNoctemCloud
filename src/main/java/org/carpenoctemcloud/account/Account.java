@@ -8,9 +8,6 @@ package org.carpenoctemcloud.account;
  * @param email          The email of the user.
  * @param emailConfirmed If the email is confirmed.
  * @param isAdmin        True if the account is an admin, and can log into the admin dashboard.
- * @param password       The hashed password of the account.
- * @param salt           THe salt used to create the password hash.
  */
-public record Account(int id, String name, String email, boolean emailConfirmed, boolean isAdmin,
-                      String password, String salt) {
+public record Account(int id, String name, String email, boolean emailConfirmed, boolean isAdmin) {
 }
