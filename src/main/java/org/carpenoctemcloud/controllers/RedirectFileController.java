@@ -75,18 +75,18 @@ public class RedirectFileController {
                 zipStream.putNextEntry(new ZipEntry(file.name() + fileCreator.getFileExtension()));
                 zipStream.write(content.getBytes());
                 zipStream.closeEntry();
-                output = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             } catch (IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                                                   "Error creating zip file.");
             }
+            output = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         } else {
             output = new ByteArrayInputStream(content.getBytes());
         }
 
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                                          "attachment; filename=linkArchive" + file.id() +
+                                          "attachment; filename=" + file.name() +
                                                   (fileCreator.compressFile() ? ".zip" :
                                                           fileCreator.getFileExtension()))
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
