@@ -28,17 +28,31 @@ public class AuthTokenService {
     public Optional<Account> accountFromToken(String token) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("token", token);
         List<Account> account = template.query("""
-                                                       select a.*
-                                                       from account a, auth_token t
-                                                       where t.token=:token
-                                                         and t.account_id=a.id
-                                                         and t.expiry > now()
-                                                       limit 1;
+                                                       with acc as (select a.*
+                                                                    from account a,
+                                                                         auth_token t
+                                                                    where t.token = :token
+                                                                      and t.account_id = a.id
+                                                                      and t.expiry > now()
+                                                                    limit 1)
+                                                       update auth_token
+                                                       set last_accessed=now()
+                                                       from acc
+                                                       where token = :token
+                                                       returning acc.*;
                                                        """, source, new AccountMapper());
         if (account.isEmpty()) {
             return Optional.empty();
         }
         return Optional.of(account.getFirst());
+    }
+
+    public void deleteTokensOfAccount(int accountID) {
+        SqlParameterSource source = new MapSqlParameterSource("accountID", accountID);
+        template.update("""
+                                delete from auth_token
+                                where account_id=:accountID;
+                                """, source);
     }
 
     /**
@@ -71,6 +85,13 @@ public class AuthTokenService {
                                 from found_account;
                                 """, source);
         return Optional.of(token);
+    }
+
+    public void deleteOldTokens() {
+        template.update("""
+                                delete from auth_token
+                                where expiry <= now();
+                                """, new MapSqlParameterSource());
     }
 
     private String randomToken() {
