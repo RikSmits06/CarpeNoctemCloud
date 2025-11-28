@@ -18,6 +18,8 @@ import org.springframework.web.context.WebApplicationContext;
 @EnableWebSecurity
 public class AuthConfiguration {
 
+    public static final int MAX_AGE_IN_HOURS = 48;
+
     /**
      * The password algorithm we use to hash password.
      * Should not be changed randomly as it will break login for existing users.

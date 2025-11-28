@@ -1,5 +1,7 @@
 package org.carpenoctemcloud.account;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -55,5 +57,16 @@ public class AccountService {
     public void activateAccount(int accountID) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("accountID", accountID);
         template.update("update account set email_confirmed=true where id=:accountID", source);
+    }
+
+    public Optional<Account> getActivatedAccountByEmail(String email) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("email", email);
+        List<Account> accounts = template.query("""
+                                                        select * from account where email=:email and email_confirmed limit 1;""",
+                                                source, new AccountMapper());
+        if (accounts.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(accounts.getFirst());
     }
 }
