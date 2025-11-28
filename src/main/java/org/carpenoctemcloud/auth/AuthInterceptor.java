@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+/**
+ * Intercepts all requests and checks if it contains an auth token to link to an account.
+ */
 @SuppressWarnings("NullableProblems")
 @RequestScope
 @Component
@@ -19,6 +22,12 @@ public class AuthInterceptor implements HandlerInterceptor {
     private final AuthTokenService authTokenService;
     private final CurrentUserContext currentUserContext;
 
+    /**
+     * Creates a new interceptor.
+     *
+     * @param authTokenService   The service to retrieve accounts from auth tokens.
+     * @param currentUserContext The context of the current user to set the active account.
+     */
     public AuthInterceptor(AuthTokenService authTokenService,
                            CurrentUserContext currentUserContext) {
         this.authTokenService = authTokenService;

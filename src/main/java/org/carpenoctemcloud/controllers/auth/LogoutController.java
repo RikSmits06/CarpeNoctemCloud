@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.annotation.RequestScope;
 
+/**
+ * Endpoints used to log out the user under the /auth directory.
+ */
 @RequestMapping("/auth")
 @RequestScope
 @Controller
@@ -19,12 +22,24 @@ public class LogoutController {
     private final AuthTokenService authTokenService;
     private final CurrentUserContext currentUserContext;
 
+    /**
+     * Creates a new controller used for login out.
+     *
+     * @param authTokenService   The token service used to delete tokens.
+     * @param currentUserContext The current user to get the account id.
+     */
     public LogoutController(AuthTokenService authTokenService,
                             CurrentUserContext currentUserContext) {
         this.authTokenService = authTokenService;
         this.currentUserContext = currentUserContext;
     }
 
+    /**
+     * Logout endpoint with get method. Visiting this logs out the user.
+     *
+     * @param response The response altered to log out the user.
+     * @return The redirect to the next page.
+     */
     @GetMapping({"/logout", "/logout."})
     public String logoutPage(HttpServletResponse response) {
         Optional<Account> accountOpt = currentUserContext.getUser();

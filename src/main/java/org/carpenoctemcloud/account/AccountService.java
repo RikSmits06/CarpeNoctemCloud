@@ -19,7 +19,8 @@ public class AccountService {
     /**
      * Creates a new AccountService.
      *
-     * @param template The template to interact with the database.
+     * @param template        The template to interact with the database.
+     * @param passwordEncoder The function used to encode passwords to hashes.
      */
     public AccountService(NamedParameterJdbcTemplate template, PasswordEncoder passwordEncoder) {
         this.template = template;
@@ -59,6 +60,12 @@ public class AccountService {
         template.update("update account set email_confirmed=true where id=:accountID", source);
     }
 
+    /**
+     * Retrieves an account by email and also makes sure that this account is deactivated.
+     *
+     * @param email The email of the account.
+     * @return Optional containing the account or an empty optional if the account does not exist or is not activated.
+     */
     public Optional<Account> getActivatedAccountByEmail(String email) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("email", email);
         List<Account> accounts = template.query("""

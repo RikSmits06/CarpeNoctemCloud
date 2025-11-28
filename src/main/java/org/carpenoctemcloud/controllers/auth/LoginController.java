@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Controller located at /auth used to log in the user.
+ */
 @Controller
 @RequestMapping("/auth")
 @RequestScope
@@ -21,12 +24,25 @@ public class LoginController {
     private final CurrentUserContext currentUserContext;
     private final AuthTokenService authTokenService;
 
+    /**
+     * Creates a new controller for login.
+     *
+     * @param currentUserContext The context of the current user needed to set an active user.
+     * @param authTokenService   Token service to generate a new token.
+     */
     public LoginController(CurrentUserContext currentUserContext,
                            AuthTokenService authTokenService) {
         this.currentUserContext = currentUserContext;
         this.authTokenService = authTokenService;
     }
 
+    /**
+     * Login page for the user to see.
+     *
+     * @param error Error can be a few values but should mainly be set by the login controller.
+     * @param model The model used by thymeleaf.
+     * @return The name of the template to go to.
+     */
     @GetMapping({"/login", "/login/"})
     public String loginUserPage(@RequestParam(required = false, defaultValue = "0") int error,
                                 Model model) {
@@ -45,6 +61,14 @@ public class LoginController {
         return "loginPage";
     }
 
+    /**
+     * Post mapping to actually log in the user.
+     *
+     * @param email    The email of the user given in the form data.
+     * @param password The password of the user given in the form data.
+     * @param response The response which will be altered by the function.
+     * @return A redirect to the page to goto next.
+     */
     @PostMapping({"/login", "/login/"})
     public String loginProcedure(@ModelAttribute(name = "email") String email,
                                  @ModelAttribute(name = "password") String password,
@@ -61,7 +85,7 @@ public class LoginController {
 
         Cookie cookie = new Cookie("auth-token", tokenOpt.get());
         cookie.setPath("/");
-        cookie.setMaxAge(AuthConfiguration.MAX_AGE_IN_HOURS * 60 * 60);
+        cookie.setMaxAge(AuthConfiguration.MAX_AGE_AUTH_TOKEN_IN_HOURS * 60 * 60);
         response.addCookie(cookie);
         return "redirect:/";
     }

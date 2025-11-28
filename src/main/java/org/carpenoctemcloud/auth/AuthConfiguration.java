@@ -18,7 +18,16 @@ import org.springframework.web.context.WebApplicationContext;
 @EnableWebSecurity
 public class AuthConfiguration {
 
-    public static final int MAX_AGE_IN_HOURS = 48;
+    /**
+     * How many hours until an auth token is no longer valid.
+     */
+    public static final int MAX_AGE_AUTH_TOKEN_IN_HOURS = 48;
+
+    /**
+     * Creates a new AuthConfiguration but should not be done manually but through Spring Boot.
+     */
+    public AuthConfiguration() {
+    }
 
     /**
      * The password algorithm we use to hash password.
@@ -31,6 +40,11 @@ public class AuthConfiguration {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * The current user of the application.
+     *
+     * @return The context encapsulating the current user.
+     */
     @Bean
     @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST)
     public CurrentUserContext currentUserContext() {
