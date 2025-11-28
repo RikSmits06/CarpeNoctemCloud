@@ -1,5 +1,6 @@
 package org.carpenoctemcloud.auth;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 import org.carpenoctemcloud.account.Account;
@@ -31,5 +32,32 @@ class AuthTokenService {
             return Optional.empty();
         }
         return Optional.of(account.getFirst());
+    }
+
+    public String addAuthTokenByEmail(String email) {
+        String token = randomToken();
+        SqlParameterSource source =
+                new MapSqlParameterSource().addValue("email", email).addValue("token", token);
+        template.update("""
+                                with found_account_id as
+                                         (select id from account where email = :email and email_confirmed)
+                                insert
+                                into auth_token (token, account_id, expiry)
+                                values (:token, found_account_id, now());
+                                """, source);
+        return token;
+    }
+
+    private String randomToken() {
+        char[] charSet =
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz".toCharArray();
+        StringBuilder ret = new StringBuilder();
+        SecureRandom random = new SecureRandom();
+
+        for (int i = 0; i < 256; i++) {
+            ret.append(charSet[random.nextInt(0, charSet.length)]);
+        }
+
+        return ret.toString();
     }
 }

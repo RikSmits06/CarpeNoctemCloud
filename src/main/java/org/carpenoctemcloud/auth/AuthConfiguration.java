@@ -30,7 +30,7 @@ public class AuthConfiguration {
     }
 
     @Bean
-    @Scope(value = WebApplicationContext.SCOPE_REQUEST)
+    @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST)
     public CurrentUserContext currentUserContext() {
         return new CurrentUserContext();
     }

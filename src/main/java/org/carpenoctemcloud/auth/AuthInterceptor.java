@@ -8,9 +8,11 @@ import java.util.Objects;
 import java.util.Optional;
 import org.carpenoctemcloud.account.Account;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @SuppressWarnings("NullableProblems")
+@RequestScope
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
