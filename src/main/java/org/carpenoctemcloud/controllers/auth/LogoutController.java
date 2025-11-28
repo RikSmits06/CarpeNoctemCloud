@@ -1,5 +1,7 @@
 package org.carpenoctemcloud.controllers.auth;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import org.carpenoctemcloud.account.Account;
 import org.carpenoctemcloud.auth.AuthTokenService;
@@ -24,7 +26,7 @@ public class LogoutController {
     }
 
     @GetMapping({"/logout", "/logout."})
-    public String logoutPage() {
+    public String logoutPage(HttpServletResponse response) {
         Optional<Account> accountOpt = currentUserContext.getUser();
 
         if (accountOpt.isEmpty()) {
@@ -33,6 +35,11 @@ public class LogoutController {
 
         Account account = accountOpt.get();
         authTokenService.deleteTokensOfAccount(account.id());
+        Cookie cookie = new Cookie("auth-token", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         return "redirect:/auth/login";
     }
 }
