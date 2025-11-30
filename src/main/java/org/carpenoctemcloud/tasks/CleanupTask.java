@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import org.carpenoctemcloud.auth.AuthTokenService;
 import org.carpenoctemcloud.delete_task_log.DeleteTaskLogService;
+import org.carpenoctemcloud.email_confirmation.EmailConfirmationTokenService;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ public class CleanupTask {
     private final DeleteTaskLogService logService;
     private final RemoteFileService fileService;
     private final AuthTokenService authTokenService;
+    private final EmailConfirmationTokenService emailConfirmationTokenService;
 
     /**
      * Constructor of the CleanupTask. It requires the RemoteFileService to delete old files.
@@ -27,10 +29,12 @@ public class CleanupTask {
      * @param authTokenService The service used to clean up  old auth tokens.
      */
     public CleanupTask(DeleteTaskLogService logService, RemoteFileService fileService,
-                       AuthTokenService authTokenService) {
+                       AuthTokenService authTokenService,
+                       EmailConfirmationTokenService emailConfirmationTokenService) {
         this.logService = logService;
         this.fileService = fileService;
         this.authTokenService = authTokenService;
+        this.emailConfirmationTokenService = emailConfirmationTokenService;
     }
 
     /**
@@ -52,5 +56,10 @@ public class CleanupTask {
     @Scheduled(cron = "0 0/15 * * * *")
     public void cleanupOldAuthTokens() {
         authTokenService.deleteOldTokens();
+    }
+
+    @Scheduled(cron = "0 0/15 * * * *")
+    public void cleanupEmailConfirmationTokens() {
+        emailConfirmationTokenService.cleanupOldTokens();
     }
 }

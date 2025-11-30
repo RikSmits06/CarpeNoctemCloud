@@ -24,6 +24,11 @@ public class AuthConfiguration {
     public static final int MAX_AGE_AUTH_TOKEN_IN_HOURS = 48;
 
     /**
+     *
+     */
+    public static final int MAX_AGE_EMAIL_CONFIRMATION_IN_HOURS = 2;
+
+    /**
      * Creates a new AuthConfiguration but should not be done manually but through Spring Boot.
      */
     public AuthConfiguration() {

@@ -2,6 +2,8 @@ package org.carpenoctemcloud.controllers.auth;
 
 import org.carpenoctemcloud.account.AccountService;
 import org.carpenoctemcloud.auth.CurrentUserContext;
+import org.carpenoctemcloud.email.EmailService;
+import org.carpenoctemcloud.email_confirmation.EmailConfirmationTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,10 +21,16 @@ public class SignUpController {
     private static final Logger logger = LoggerFactory.getLogger(SignUpController.class);
     private final AccountService accountService;
     private final CurrentUserContext currentUserContext;
+    private final EmailConfirmationTokenService emailConfirmationTokenService;
+    private final EmailService emailService;
 
-    public SignUpController(AccountService accountService, CurrentUserContext currentUserContext) {
+    public SignUpController(AccountService accountService, CurrentUserContext currentUserContext,
+                            EmailConfirmationTokenService emailConfirmationTokenService,
+                            EmailService emailService) {
         this.accountService = accountService;
         this.currentUserContext = currentUserContext;
+        this.emailConfirmationTokenService = emailConfirmationTokenService;
+        this.emailService = emailService;
     }
 
     @GetMapping({"/signup", "/signup/"})
@@ -65,6 +73,13 @@ public class SignUpController {
             return "redirect:/auth/signup?error=1";
         }
 
-        return "redirect:/auth/login";
+        try {
+            String token = emailConfirmationTokenService.generateConfirmationTokenByEmail(email);
+            emailService.sendConfirmationEmail(email, token);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return "redirect:/auth/confirm";
     }
 }

@@ -1,6 +1,5 @@
 package org.carpenoctemcloud.auth;
 
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
 import org.carpenoctemcloud.account.Account;
@@ -96,7 +95,7 @@ public class AuthTokenService {
             return Optional.empty();
         }
 
-        String token = randomToken();
+        String token = AuthUtil.randomToken(256);
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("email", email).addValue("token", token)
                         .addValue("expireHours", AuthConfiguration.MAX_AGE_AUTH_TOKEN_IN_HOURS);
@@ -119,18 +118,5 @@ public class AuthTokenService {
                                 delete from auth_token
                                 where expiry <= now();
                                 """, new MapSqlParameterSource());
-    }
-
-    private String randomToken() {
-        char[] charSet =
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz".toCharArray();
-        StringBuilder ret = new StringBuilder();
-        SecureRandom random = new SecureRandom();
-
-        for (int i = 0; i < 256; i++) {
-            ret.append(charSet[random.nextInt(0, charSet.length)]);
-        }
-
-        return ret.toString();
     }
 }

@@ -39,3 +39,4 @@ docs
 .venv
 logs
 *.http
+*.env
