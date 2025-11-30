@@ -10,6 +10,7 @@
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 <!-- nav -->
 <div th:replace="components/header :: header (activePage = 'confirmEmail')"></div>
+<h1 th:if="${error != null && !error.isBlank()}" th:text="${error}"></h1>
 
 <form class="" action="/auth/confirm/" method="post">
     <label>

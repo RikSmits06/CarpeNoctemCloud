@@ -17,6 +17,27 @@ public class EmailConfirmationTokenService {
     }
 
     /**
+     * Activates the email of the person owning this token.
+     * Will throw a runtime exception if no email was updated.
+     *
+     * @param token The token to activate.
+     */
+    public void activateEmailByToken(String token) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("token", token);
+        int affected = template.update("""
+                                               update account acc
+                                               set email_confirmed = true
+                                               where id in (select ect.account_id
+                                                            from email_confirmation_token ect
+                                                            where ect.token = :token
+                                                              and ect.expiry > now()
+                                                            limit 1);""", source);
+        if (affected == 0) {
+            throw new RuntimeException("No email has been activated.");
+        }
+    }
+
+    /**
      * Generates and stores a new token to confirm an email.
      * Will fail if the email is already confirmed.
      *
