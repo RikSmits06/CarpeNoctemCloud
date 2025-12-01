@@ -6,7 +6,7 @@ db = dbLayer.DbLayer()
 option = st.selectbox("Which endpoint do you want to see?", [x for [x] in db.get_log_endpoints()])
 
 data = [[day, hits] for [day, hits] in db.get_hits_of_endpoint(option)]
-
+print(f"day1: {data[0][0]}, next: {data[0][0] + 1}")
 data = {
     "days": [day for [day, _] in data],
     "hits": [hits for [_, hits] in data]
