@@ -41,7 +41,7 @@ perform the database migrations mentioned in the database section.
 
 The email credentials are defined in `application.properties` and this file uses an .env file,
 creatively called `.env` to load the credentials.
-The `.env` file has to be created manually and contain the entries `EMAIL` and `EMAIL_PASSWORD`.
+The `.env` file has to be created manually and contain the entries `EMAIL_USERNAME` and `EMAIL_PASSWORD`.
 
 ### Reverse Proxy
 
