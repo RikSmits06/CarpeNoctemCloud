@@ -76,4 +76,15 @@ public class AccountService {
         }
         return Optional.of(accounts.getFirst());
     }
+
+    public Optional<Account> getAccountByEmail(String email) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("email", email);
+        List<Account> accounts = template.query("""
+                                                        select * from account where email=:email limit 1;""",
+                                                source, new AccountMapper());
+        if (accounts.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(accounts.getFirst());
+    }
 }

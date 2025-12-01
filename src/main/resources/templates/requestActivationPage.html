@@ -9,21 +9,15 @@
 </head>
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 <!-- nav -->
-<div th:replace="components/header :: header (activePage = 'login')"></div>
+<div th:replace="components/header :: header (activePage = 'requestConfirmation')"></div>
 <h1 th:if="${error != null && !error.isBlank()}" th:text="${error}"></h1>
 
-<form class="" action="/auth/login/" method="post">
+<form class="" action="/auth/request-confirmation/" method="post">
     <label>
         <input class="form-text" name="email" placeholder="email..." type="email">
     </label>
-    <label>
-        <input class="form-text" name="password" placeholder="password..." type="password">
-    </label>
-    <button type="submit" class="btn btn-primary">Log In</button>
+    <button type="submit" class="btn btn-primary">Request Confirmation</button>
 </form>
-
-<a href="/auth/signup" class="link-primary">Create Account</a>
-<a href="/auth/request-confirmation" class="link-primary">Activate Email</a>
 
 <!-- footer -->
 <div th:replace="components/footer :: footer"></div>
