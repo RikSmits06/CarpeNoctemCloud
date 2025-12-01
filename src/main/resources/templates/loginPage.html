@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -10,20 +11,36 @@
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 <!-- nav -->
 <div th:replace="components/header :: header (activePage = 'login')"></div>
-<h1 th:if="${error != null && !error.isBlank()}" th:text="${error}"></h1>
 
-<form class="" action="/auth/login/" method="post">
-    <label>
-        <input class="form-text" name="email" placeholder="email..." type="email">
-    </label>
-    <label>
-        <input class="form-text" name="password" placeholder="password..." type="password">
-    </label>
-    <button type="submit" class="btn btn-primary">Log In</button>
-</form>
+<main class="flex-grow-1 d-flex my-4 justify-content-center">
+    <div class="d-flex flex-column align-items-center gap-4">
+        <!-- Error message -->
+        <div th:if="${error != null && !error.isBlank()}" class="alert alert-danger text-center" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+        <h1>Login</h1>
+        <!-- Login form -->
+        <form class="d-flex flex-column align-items-center gap-3" action="/auth/login/" method="post" style="width: 420px;">
+            <div class="w-100">
+                <input class="form-control" name="email" placeholder="Email..." type="email" required>
+            </div>
+            <div class="w-100">
+                <input class="form-control" name="password" placeholder="Password..." type="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Log In</button>
+        </form>
 
-<a href="/auth/signup" class="link-primary">Create Account</a>
-<a href="/auth/request-confirmation" class="link-primary">Activate Email</a>
+        <!-- Action buttons -->
+        <div class="d-flex flex-column gap-2 align-items-center">
+            <button onclick="window.location.href='/auth/signup'" class="btn btn-outline-primary" style="width: 420px;">
+                Create Account
+            </button>
+            <button onclick="window.location.href='/auth/request-confirmation'" class="btn btn-outline-secondary" style="width: 420px;">
+                Activate Email
+            </button>
+        </div>
+    </div>
+</main>
 
 <!-- footer -->
 <div th:replace="components/footer :: footer"></div>
