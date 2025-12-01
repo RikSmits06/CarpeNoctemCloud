@@ -10,20 +10,37 @@
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 <!-- nav -->
 <div th:replace="components/header :: header (activePage = 'signUp')"></div>
-<h1 th:unless="${error == null || error.isBlank()}" th:text="${error}"></h1>
 
-<form action="/auth/signup/" method="post">
-    <label>
-        <input class="form-text" type="text" name="name" placeholder="name..." minlength="3">
-    </label>
-    <label>
-        <input class="form-text" name="email" placeholder="email..." type="email">
-    </label>
-    <label>
-        <input class="form-text" name="password" placeholder="password..." type="password">
-    </label>
-    <button class="btn btn-primary" type="submit">Create Account</button>
-</form>
+<main class="flex-grow-1 d-flex justify-content-center">
+    <div class="d-flex flex-column my-4 align-items-center gap-4">
+        <h1>Create Account</h1>
+
+        <!-- Error message -->
+        <div th:unless="${error == null || error.isBlank()}" class="alert alert-danger text-center" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Sign up form -->
+        <form class="d-flex flex-column align-items-center gap-3" action="/auth/signup/" method="post" style="width: 420px;">
+            <div class="w-100">
+                <input class="form-control" type="text" name="name" placeholder="Name..." minlength="3" required>
+            </div>
+            <div class="w-100">
+                <input class="form-control" name="email" placeholder="Email..." type="email" required>
+            </div>
+            <div class="w-100">
+                <input class="form-control" name="password" placeholder="Password..." type="password" required>
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Create Account</button>
+        </form>
+
+        <div class="d-flex flex-column gap-2 align-items-center">
+            <button onclick="window.location.href='/auth/login'" class="btn btn-outline-secondary" style="width: 420px;">
+                Back to Login
+            </button>
+        </div>
+    </div>
+</main>
 
 <!-- footer -->
 <div th:replace="components/footer :: footer"></div>
