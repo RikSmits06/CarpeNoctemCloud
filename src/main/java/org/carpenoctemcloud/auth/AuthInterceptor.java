@@ -3,7 +3,6 @@ package org.carpenoctemcloud.auth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import org.carpenoctemcloud.account.Account;
@@ -42,7 +41,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             token = Arrays.stream(request.getCookies())
                     .filter(cookie -> cookie.getName().equals("auth-token")).toList().getFirst()
                     .getValue();
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             return true;
         }
 
