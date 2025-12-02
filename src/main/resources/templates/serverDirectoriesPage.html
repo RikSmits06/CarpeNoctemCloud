@@ -12,15 +12,17 @@
 <div th:replace="components/header :: header (activePage = 'explorer')"></div>
 
 <main class="flex-column flex-grow-1 d-flex text-center p-5 justify-content-center">
-    <ul>
-        <li>
-            <a href="/file-system/">..</a>
-        </li>
-        <li th:each="directory: ${directories}">
-            <a th:href="'/file-system/directory/' + ${directory.id()}"
-               th:text="${directory.folderName()}"></a>
-        </li>
-    </ul>
+    <div>
+        <a href="/file-system/">..</a>
+    </div>
+
+    <div class="my-2 w-75 mx-auto">
+        <div class="flex-column justify-content-center">
+            <div th:each="directory : ${directories}">
+                <div th:replace="components/directoryResult :: directory(directoryRef=${directory})"></div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <!-- footer -->
