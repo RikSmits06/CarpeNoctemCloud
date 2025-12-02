@@ -1,9 +1,11 @@
 package org.carpenoctemcloud.account;
 
-import java.security.SecureRandom;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,14 +14,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountService {
     private final NamedParameterJdbcTemplate template;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Creates a new AccountService.
      *
-     * @param template The template to interact with the database.
+     * @param template        The template to interact with the database.
+     * @param passwordEncoder The function used to encode passwords to hashes.
      */
-    public AccountService(NamedParameterJdbcTemplate template) {
+    public AccountService(NamedParameterJdbcTemplate template, PasswordEncoder passwordEncoder) {
         this.template = template;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -32,16 +37,15 @@ public class AccountService {
      * @return The id of the account if everything went well.
      */
     public int createAccount(String name, String email, String password, boolean isAdmin) {
-        String salt = createSalt();
+        password = passwordEncoder.encode(password);
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("name", name).addValue("email", email)
-                        .addValue("password", password).addValue("salt", salt)
-                        .addValue("isAdmin", isAdmin);
+                        .addValue("password", password).addValue("isAdmin", isAdmin);
 
 
         return template.query("""
-                                      insert into account (name, email, password, salt, is_admin)
-                                      values (:name, :email, sha256(cast(:password || '|' || :salt as bytea)), :salt, :isAdmin)
+                                      insert into account (name, email, password, is_admin)
+                                      values (:name, :email, :password, :isAdmin)
                                       returning id as account_id;""", source, new AccountIdMapper())
                 .getFirst();
     }
@@ -56,18 +60,31 @@ public class AccountService {
         template.update("update account set email_confirmed=true where id=:accountID", source);
     }
 
-    private String createSalt() {
-        SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[100];
-        random.nextBytes(bytes);
-        return bytesToHex(bytes);
+    /**
+     * Retrieves an account by email and also makes sure that this account is deactivated.
+     *
+     * @param email The email of the account.
+     * @return Optional containing the account or an empty optional if the account does not exist or is not activated.
+     */
+    public Optional<Account> getActivatedAccountByEmail(String email) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("email", email);
+        List<Account> accounts = template.query("""
+                                                        select * from account where email=:email and email_confirmed limit 1;""",
+                                                source, new AccountMapper());
+        if (accounts.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(accounts.getFirst());
     }
 
-    private String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02X", b));
+    public Optional<Account> getAccountByEmail(String email) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("email", email);
+        List<Account> accounts = template.query("""
+                                                        select * from account where email=:email limit 1;""",
+                                                source, new AccountMapper());
+        if (accounts.isEmpty()) {
+            return Optional.empty();
         }
-        return sb.toString();
+        return Optional.of(accounts.getFirst());
     }
 }

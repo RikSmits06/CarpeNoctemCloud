@@ -37,6 +37,12 @@ The main server is written using Java and the Spring Boot framework. To run it, 
 compile it into a jar file. Use `java -jar <jarFile>` to run the server. It should automatically
 perform the database migrations mentioned in the database section.
 
+### Email
+
+The email credentials are defined in `application.properties` and this file uses an .env file,
+creatively called `.env` to load the credentials.
+The `.env` file has to be created manually and contain the entries `EMAIL_USERNAME` and `EMAIL_PASSWORD`.
+
 ### Reverse Proxy
 
 It is recommended to run these services behind nginx or another reverse proxy. Use the documentation

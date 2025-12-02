@@ -1,4 +1,4 @@
-package org.carpenoctemcloud.controllers;
+package org.carpenoctemcloud.controllers.search;
 
 import org.carpenoctemcloud.category.CategoryService;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
