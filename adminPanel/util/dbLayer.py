@@ -1,5 +1,6 @@
 import psycopg2
 from psycopg2._psycopg import connection, cursor
+import bcrypt
 
 _conn: connection | None = None
 
@@ -60,16 +61,19 @@ class DbLayer:
 
     def valid_login(self, email, password):
         cur: cursor = self._conn.cursor()
-        cur.execute("""select exists(select
-                                     from account
-                                     where email = %s
-                                       and cast(sha256(cast(%s || '|' || salt as bytea)) as text) =
-                                           password
-                                       and email_confirmed
-                                       and is_admin);""", (email, password))
-        result = cur.fetchone()[0]
+        cur.execute("""select password
+                       from account
+                       where email = %s
+                         and email_confirmed
+                         and is_admin;""", (email,))
+        hashed_password_result = cur.fetchall()
         cur.close()
-        return result
+
+        if len(hashed_password_result) == 0:
+            return False
+
+        return bcrypt.checkpw(password.encode("ascii"),
+                              hashed_password_result[0][0].encode("ascii"))
 
     def get_log_endpoints(self):
         cur: cursor = self._conn.cursor()
