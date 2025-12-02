@@ -1,4 +1,4 @@
-package org.carpenoctemcloud.controllers;
+package org.carpenoctemcloud.controllers.search;
 
 import java.util.Optional;
 import org.carpenoctemcloud.remote_file.RemoteFile;
