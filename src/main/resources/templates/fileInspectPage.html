@@ -15,20 +15,14 @@
     <div class="my-2 w-75 mx-auto">
         <div class="row my-2">
             <div class="col-auto align-content-center object-fit-contain"
-                 th:if="${!resultFile.categoryID().isEmpty()}">
-                <img th:if="${resultFile.categoryID().get() == 1}" th:src="@{/img/film.svg}"
-                     alt="file logo"
-                     class="fileImage">
-                <img th:if="${resultFile.categoryID().get() == 2}" th:src="@{/img/music.svg}"
-                     alt="file logo"
-                     class="fileImage">
-                <img th:if="${resultFile.categoryID().get() == 3}" th:src="@{/img/image.svg}"
+                 th:if="${category != null}">
+                <img th:src="${category.svgPath()}"
                      alt="file logo"
                      class="fileImage">
             </div>
 
             <div class="col-auto justify-content-center align-content-center object-fit-contain"
-                 th:if="${resultFile.categoryID().isEmpty()}">
+                 th:if="${category == null}">
                 <img th:src="@{/img/file.svg}" class="fileImage" alt="file">
             </div>
             <h3 class="col align-content-center mb-0" th:text="${resultFile.name()}"></h3>
