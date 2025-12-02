@@ -1,7 +1,10 @@
 package org.carpenoctemcloud.directory;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,5 +38,17 @@ public class DirectoryService {
                                 select :path, (select s.id from server s where s.host=:serverName)
                                 on conflict do nothing;
                                 """, source);
+    }
+
+    public Optional<Directory> getDirectory(long id) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("id", id);
+        List<Directory> directory = template.query("""
+                                                           select * from directory
+                                                           where id=:id limit 1;
+                                                           """, source, new DirectoryMapper());
+        if (directory.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(directory.getFirst());
     }
 }
