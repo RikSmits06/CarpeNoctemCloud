@@ -1,6 +1,7 @@
 package org.carpenoctemcloud.remote_file_system;
 
 import java.util.List;
+import java.util.Optional;
 import org.carpenoctemcloud.directory.Directory;
 import org.carpenoctemcloud.directory.DirectoryMapper;
 import org.carpenoctemcloud.remote_file.RemoteFile;
@@ -26,12 +27,17 @@ public class RemoteFileSystemService {
                                       """, new ServerMapper());
     }
 
-    public Server getServer(long id) {
-        SqlParameterSource source =
-                new MapSqlParameterSource().addValue("serverID", id);
-        return template.query("""
-                                      select * from server where server.id=:serverID;
-                                      """, source, new ServerMapper()).getFirst();
+    public Optional<Server> getServer(long id) {
+        SqlParameterSource source = new MapSqlParameterSource().addValue("serverID", id);
+        List<Server> serverList = template.query("""
+                                                         select * from server where server.id=:serverID;
+                                                         """, source, new ServerMapper());
+
+        if (serverList.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(serverList.getFirst());
     }
 
     public List<Directory> getSubDirectories(long directoryID) {

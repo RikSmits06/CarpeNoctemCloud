@@ -1,10 +1,13 @@
 package org.carpenoctemcloud.controllers.file_system;
 
+import java.util.List;
+import java.util.Optional;
 import org.carpenoctemcloud.category.CategoryService;
 import org.carpenoctemcloud.directory.Directory;
 import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.remote_file.RemoteFile;
 import org.carpenoctemcloud.remote_file_system.RemoteFileSystemService;
+import org.carpenoctemcloud.server.Server;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,9 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/file-system")
@@ -42,9 +42,16 @@ public class FileSystemController {
 
     @GetMapping({"/server/{id}", "/server/{id}/"})
     public String serverDirectoryPage(@PathVariable(name = "id") long id, Model model) {
+        Optional<Server> serverOpt = remoteFileSystemService.getServer(id);
+
+        if (serverOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Server does not exist.");
+        }
+
         List<Directory> directories = remoteFileSystemService.getTopLevelDirectories(id);
+
+        model.addAttribute("server", serverOpt.get());
         model.addAttribute("directories", directories);
-        model.addAttribute("server", remoteFileSystemService.getServer(id));
         return "serverDirectoriesPage";
     }
 
