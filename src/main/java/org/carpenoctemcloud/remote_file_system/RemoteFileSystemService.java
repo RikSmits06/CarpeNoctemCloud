@@ -26,6 +26,14 @@ public class RemoteFileSystemService {
                                       """, new ServerMapper());
     }
 
+    public Server getServer(long id) {
+        SqlParameterSource source =
+                new MapSqlParameterSource().addValue("serverID", id);
+        return template.query("""
+                                      select * from server where server.id=:serverID;
+                                      """, source, new ServerMapper()).getFirst();
+    }
+
     public List<Directory> getSubDirectories(long directoryID) {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("directoryID", directoryID);

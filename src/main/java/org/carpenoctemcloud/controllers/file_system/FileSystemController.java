@@ -1,7 +1,6 @@
 package org.carpenoctemcloud.controllers.file_system;
 
-import java.util.List;
-import java.util.Optional;
+import org.carpenoctemcloud.category.CategoryService;
 import org.carpenoctemcloud.directory.Directory;
 import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.remote_file.RemoteFile;
@@ -14,6 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/file-system")
 public class FileSystemController {
@@ -22,10 +24,14 @@ public class FileSystemController {
     private final RemoteFileSystemService remoteFileSystemService;
     private final DirectoryService directoryService;
 
+    private final CategoryService categoryService;
+
     public FileSystemController(RemoteFileSystemService remoteFileSystemService,
-                                DirectoryService directoryService) {
+                                DirectoryService directoryService,
+                                CategoryService categoryService) {
         this.remoteFileSystemService = remoteFileSystemService;
         this.directoryService = directoryService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping({"/"})
@@ -38,6 +44,7 @@ public class FileSystemController {
     public String serverDirectoryPage(@PathVariable(name = "id") long id, Model model) {
         List<Directory> directories = remoteFileSystemService.getTopLevelDirectories(id);
         model.addAttribute("directories", directories);
+        model.addAttribute("server", remoteFileSystemService.getServer(id));
         return "serverDirectoriesPage";
     }
 
@@ -56,6 +63,7 @@ public class FileSystemController {
         model.addAttribute("currentDirectory", currentDirectory);
         model.addAttribute("subDirectories", subDirectories);
         model.addAttribute("files", files);
+        model.addAttribute("categories", categoryService.getAllCategories());
         return "directorySystemPage";
     }
 }

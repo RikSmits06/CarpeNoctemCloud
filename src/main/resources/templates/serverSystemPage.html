@@ -11,12 +11,15 @@
 <!-- nav -->
 <div th:replace="components/header :: header (activePage = 'explorer')"></div>
 
-<main class="flex-column flex-grow-1 d-flex p-5 justify-content-center">
-    <ul>
-        <li th:each="server: ${servers}">
-            <a th:href="'/file-system/server/' + ${server.id()}" th:text="${server.host()}"></a>
-        </li>
-    </ul>
+<main class="flex-column flex-grow-1 d-flex p-5">
+    <div class="my-2 w-75 mx-auto">
+        <h1>Servers</h1>
+        <div class="flex-column justify-content-center">
+            <div th:each="server : ${servers}">
+                <div th:replace="components/resultBar :: resultBar(link=${'/file-system/server/' + server.id()}, text=${server.host()}, icon=@{/img/server.svg})"></div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <!-- footer -->
