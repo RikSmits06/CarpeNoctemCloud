@@ -11,7 +11,7 @@ public class EmailService {
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
-
+    
     public void sendConfirmationEmail(String to, String token) {
         sendSimpleMail(to, "Email Confirmation CNCloud",
                        "Thank you for registering at Carpe Noctem Cloud!\nPlease enter this token in the website to confirm your account: " +

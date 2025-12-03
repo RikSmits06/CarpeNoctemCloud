@@ -1,6 +1,8 @@
 package org.carpenoctemcloud.controllers.search;
 
 import java.util.Optional;
+import org.carpenoctemcloud.category.Category;
+import org.carpenoctemcloud.category.CategoryService;
 import org.carpenoctemcloud.remote_file.RemoteFile;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.carpenoctemcloud.server.Server;
@@ -24,14 +26,16 @@ import org.springframework.web.server.ResponseStatusException;
 public class FileInspectController {
     private final Logger logger = LoggerFactory.getLogger(FileInspectController.class);
     private final RemoteFileService fileService;
+    private final CategoryService categoryService;
 
     /**
      * Creates a new controller instance.
      *
      * @param fileService The file service to query the files through.
      */
-    public FileInspectController(RemoteFileService fileService) {
+    public FileInspectController(RemoteFileService fileService, CategoryService categoryService) {
         this.fileService = fileService;
+        this.categoryService = categoryService;
     }
 
     /**
@@ -51,7 +55,15 @@ public class FileInspectController {
         }
 
         RemoteFile file = fileOpt.get();
-
+        model.addAttribute("category", null);
+        if (file.categoryID().isPresent()) {
+            Optional<Category> categoryOpt = categoryService.getCategory(file.categoryID().get());
+            if (categoryOpt.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                                  "Category could not be found but file has category.");
+            }
+            model.addAttribute("category", categoryOpt.get());
+        }
         Server server = fileService.getServerOfFile(id);
 
         model.addAttribute("resultFile", file);
