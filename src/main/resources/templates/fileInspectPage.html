@@ -30,9 +30,14 @@
         <strong>Server:</strong>
         <p th:text="${server.host()}"></p>
 
-        <a class="d-flex align-items-center gap-3 download text-reset mb-2"
+        <a class="d-flex align-items-center gap-3 download text-reset mb-3"
            th:href="'/file-system/directory/' + ${resultFile.directory_id()}">
-            <span><strong class="text-decoration-underline">Original directory</strong></span>
+            <div class="d-flex justify-content-center"
+                 style="width:32px;">
+                <img th:src="@{/img/folder.svg}" class="fileImage platformImage"
+                     alt="folder">
+            </div>
+            <span>Original directory</span>
         </a>
 
         <strong>Download:</strong>
