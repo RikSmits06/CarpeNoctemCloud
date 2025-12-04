@@ -2,13 +2,17 @@ package org.carpenoctemcloud.shell_commands;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.indexing.ServerIndexer;
 import org.carpenoctemcloud.indexing_listeners.IndexingListenerBatch;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
-import org.carpenoctemcloud.smb.ServerIndexerSMB;
-import org.carpenoctemcloud.smb.SmbConstants;
+import org.carpenoctemcloud.server.Server;
+import org.carpenoctemcloud.server.ServerIndexerFactory;
+import org.carpenoctemcloud.server.ServerProtocolNotFoundException;
+import org.carpenoctemcloud.server.ServerService;
+import org.carpenoctemcloud.tasks.IndexingTask;
 import org.springframework.format.annotation.DurationFormat;
 import org.springframework.format.datetime.standard.DurationFormatterUtils;
 import org.springframework.shell.standard.ShellComponent;
@@ -22,6 +26,8 @@ import org.springframework.shell.standard.ShellOption;
 public class ScanServerCommand {
     private final RemoteFileService fileService;
     private final DirectoryService directoryService;
+    private final IndexingTask indexingTask;
+    private final ServerService serverService;
 
     /**
      * Creates a new object to store the shell command definitions.
@@ -29,9 +35,12 @@ public class ScanServerCommand {
      * @param fileService      The service used to store files.
      * @param directoryService Service given to the listeners to create directories.
      */
-    public ScanServerCommand(RemoteFileService fileService, DirectoryService directoryService) {
+    public ScanServerCommand(RemoteFileService fileService, DirectoryService directoryService,
+                             IndexingTask indexingTask, ServerService serverService) {
         this.fileService = fileService;
         this.directoryService = directoryService;
+        this.indexingTask = indexingTask;
+        this.serverService = serverService;
     }
 
     /**
@@ -40,9 +49,19 @@ public class ScanServerCommand {
      * @param url The url of the smb server.
      * @return The duration of the scanning as a string.
      */
-    @ShellMethod(key = "scanSMB", value = "Scans an SMB server.")
-    public String ScanSMB(@ShellOption(value = "Url of the server to index.") String url) {
-        ServerIndexer indexer = new ServerIndexerSMB(url);
+    @ShellMethod(key = "scan", value = "Scans a server.")
+    public String scan(@ShellOption(value = "Url of the server to index.") String url) {
+        Optional<Server> serverOpt = serverService.getServerByHost(url);
+        if (serverOpt.isEmpty()) {
+            return "Server does not exist in database.";
+        }
+        Server server = serverOpt.get();
+        ServerIndexer indexer = null;
+        try {
+            indexer = ServerIndexerFactory.getIndexer(server);
+        } catch (ServerProtocolNotFoundException e) {
+            return "Could not get indexer for given server.";
+        }
         IndexingListener listener = new IndexingListenerBatch(fileService, directoryService);
         return timedIndexing(url, indexer, listener);
     }
@@ -50,13 +69,9 @@ public class ScanServerCommand {
     /**
      * Scans all known smb servers manually.
      */
-    @ShellMethod(key = "scanAllSMB", value = "Scans all SMB servers.")
-    public void ScanAllSMB() {
-        IndexingListener listener = new IndexingListenerBatch(fileService, directoryService);
-        for (String url : SmbConstants.SMB_SERVERS) {
-            ServerIndexer indexer = new ServerIndexerSMB(url);
-            System.out.println(timedIndexing(url, indexer, listener));
-        }
+    @ShellMethod(key = "scanAll", value = "Scans all servers in the database.")
+    public void scanAll() {
+        indexingTask.indexAllServers();
     }
 
     private String timedIndexing(String url, ServerIndexer indexer, IndexingListener listener) {

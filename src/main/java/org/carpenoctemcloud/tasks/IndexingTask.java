@@ -2,14 +2,20 @@ package org.carpenoctemcloud.tasks;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.index_task_log.IndexTaskLogService;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.indexing.ServerIndexer;
 import org.carpenoctemcloud.indexing_listeners.IndexingListenerBatch;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
-import org.carpenoctemcloud.smb.ServerIndexerSMB;
-import org.carpenoctemcloud.smb.SmbConstants;
+import org.carpenoctemcloud.remote_file_system.RemoteFileSystemService;
+import org.carpenoctemcloud.server.Server;
+import org.carpenoctemcloud.server.ServerIndexerFactory;
+import org.carpenoctemcloud.server.ServerProtocolNotFoundException;
+import org.carpenoctemcloud.server.ServerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +25,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class IndexingTask {
+    private static final Logger logger = LoggerFactory.getLogger(IndexingTask.class);
     private final RemoteFileService remoteFileService;
     private final IndexTaskLogService logService;
     private final DirectoryService directoryService;
+    private final ServerService serverService;
 
     /**
      * Constructor for the indexing task, Requires remoteFileService to save the indexed files.
@@ -31,10 +39,12 @@ public class IndexingTask {
      * @param directoryService  The service given to the index listeners.
      */
     public IndexingTask(RemoteFileService remoteFileService, IndexTaskLogService logService,
-                        DirectoryService directoryService) {
+                        DirectoryService directoryService,
+                        ServerService serverService) {
         this.remoteFileService = remoteFileService;
         this.logService = logService;
         this.directoryService = directoryService;
+        this.serverService = serverService;
     }
 
 
@@ -45,11 +55,17 @@ public class IndexingTask {
     public void indexAllServers() {
         IndexingListener listener = new IndexingListenerBatch(remoteFileService, directoryService);
 
+        List<Server> servers = serverService.getServers();
+
         Timestamp startTime = Timestamp.from(Instant.now());
 
-        for (String smbServer : SmbConstants.SMB_SERVERS) {
-            ServerIndexer indexer = new ServerIndexerSMB(smbServer);
-            indexer.indexServer(listener);
+        for (Server server : servers) {
+            try {
+                ServerIndexer indexer = ServerIndexerFactory.getIndexer(server);
+                indexer.indexServer(listener);
+            } catch (ServerProtocolNotFoundException | RuntimeException e) {
+                logger.error(e.getMessage());
+            }
         }
 
         Timestamp endTime = Timestamp.from(Instant.now());
