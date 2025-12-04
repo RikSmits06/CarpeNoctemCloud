@@ -21,25 +21,6 @@ public class RemoteFileSystemService {
         this.template = template;
     }
 
-    public List<Server> getServers() {
-        return template.query("""
-                                      select * from server;
-                                      """, new ServerMapper());
-    }
-
-    public Optional<Server> getServer(long id) {
-        SqlParameterSource source = new MapSqlParameterSource().addValue("serverID", id);
-        List<Server> serverList = template.query("""
-                                                         select * from server where server.id=:serverID;
-                                                         """, source, new ServerMapper());
-
-        if (serverList.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(serverList.getFirst());
-    }
-
     public List<Directory> getSubDirectories(long directoryID) {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("directoryID", directoryID);
