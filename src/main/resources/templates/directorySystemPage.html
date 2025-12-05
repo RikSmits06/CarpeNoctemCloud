@@ -9,7 +9,7 @@
 </head>
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 <!-- nav -->
-<div th:replace="components/header :: header (activePage = 'explorer')"></div>
+<div th:replace="~{components/header :: header (activePage = 'explorer')}"></div>
 
 <main class="flex-column flex-grow-1 d-flex p-5">
     <div class="my-2 w-75 mx-auto">
@@ -17,23 +17,23 @@
             <h1 th:text="${currentDirectory.folderName()}"></h1>
 
             <div class="mb-4" th:unless="${currentDirectory.parentDirectory().isEmpty()}">
-                <div th:replace="components/titleBar :: titleBar(link=${'/file-system/directory/'+ currentDirectory.parentDirectory().get()}, text='...', icon=@{/img/folder.svg})"></div>
+                <div th:replace="~{components/titleBar :: titleBar(link=${'/file-system/directory/'+ currentDirectory.parentDirectory().get()}, text='...', icon=@{/img/folder.svg})}"></div>
             </div>
             <div class="mb-4" th:unless="${currentDirectory.parentDirectory().isPresent()}">
-                <div th:replace="components/titleBar :: titleBar(link=${'/file-system/server/'+ currentDirectory.serverID()}, text='...', icon=@{/img/server.svg})"></div>
+                <div th:replace="~{components/titleBar :: titleBar(link=${'/file-system/server/'+ currentDirectory.serverID()}, text='...', icon=@{/img/server.svg})}"></div>
             </div>
             <div th:each="directory : ${subDirectories}">
-                <div th:replace="components/resultBar :: resultBar(link=${'/file-system/directory/' + directory.id()}, text=${directory.folderName()}, icon=@{/img/folder.svg})"></div>
+                <div th:replace="~{components/resultBar :: resultBar(link=${'/file-system/directory/' + directory.id()}, text=${directory.folderName()}, icon=@{/img/folder.svg})}"></div>
             </div>
             <div th:each="file : ${files}">
-                <div th:replace="components/searchResult :: result(resultRef=${file}, categories=${categories})"></div>
+                <div th:replace="~{components/searchResult :: result(resultRef=${file}, categories=${categories})}"></div>
             </div>
         </div>
     </div>
 </main>
 
 <!-- footer -->
-<div th:replace="components/footer :: footer"></div>
+<div th:replace="~{components/footer :: footer}"></div>
 
 </body>
 </html>
