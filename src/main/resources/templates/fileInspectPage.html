@@ -1,3 +1,4 @@
+<!--/*@thymesVar id="currentUser" type="org.carpenoctemcloud.account.Account"*/-->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -26,6 +27,15 @@
                 <img th:src="@{/img/file.svg}" class="fileImage" alt="file">
             </div>
             <h3 class="col align-content-center mb-0" th:text="${resultFile.name()}"></h3>
+            <div class="col justify-content-center align-content-center object-fit-contain"
+                 th:if="${currentUser != null}">
+                <form th:action="'/file/' + ${resultFile.id()} + '/star/'" method="post">
+                    <button class="bg-transparent border-0" type="submit">
+                        <img th:src="${isStarred} ? '/img/filled-star.svg' : '/img/star.svg'"
+                             class="fileImage" alt="star file">
+                    </button>
+                </form>
+            </div>
         </div>
         <strong>Server:</strong>
         <p th:text="${server.host()}"></p>

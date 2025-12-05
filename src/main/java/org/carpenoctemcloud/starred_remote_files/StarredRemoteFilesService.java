@@ -47,7 +47,7 @@ public class StarredRemoteFilesService {
      * @param accountID The id of the account.
      * @param fileID    The id of the file to check.
      */
-    public void starFile(int accountID, int fileID) {
+    public void starFile(int accountID, long fileID) {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("account", accountID).addValue("file", fileID);
         template.update("""
@@ -56,13 +56,24 @@ public class StarredRemoteFilesService {
                                 """, source);
     }
 
+    public boolean isFileStarred(int accountID, long fileID) {
+        SqlParameterSource source =
+                new MapSqlParameterSource().addValue("account", accountID).addValue("file", fileID);
+        return Boolean.TRUE.equals(template.query("""
+                                                          select exists(select * from starred_remote_files where account_id=:account and remote_file_id=:file);
+                                                          """, source, (rs) -> {
+            rs.next();
+            return rs.getBoolean(1);
+        }));
+    }
+
     /**
      * Removes star from a file.
      *
      * @param accountID The account.
      * @param fileID    The file to unstar.
      */
-    public void unStarFile(int accountID, int fileID) {
+    public void unStarFile(int accountID, long fileID) {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("account", accountID).addValue("file", fileID);
         template.update("""
