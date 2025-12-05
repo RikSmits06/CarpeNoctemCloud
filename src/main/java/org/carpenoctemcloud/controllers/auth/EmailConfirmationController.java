@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Controller which handles the outside facing interface of confirming emails.
+ */
 @Controller
 @RequestScope
 @RequestMapping("/auth")
@@ -17,12 +20,25 @@ public class EmailConfirmationController {
     private final CurrentUserContext currentUserContext;
     private final EmailConfirmationTokenService emailConfirmationTokenService;
 
+    /**
+     * Creates a new controller with the needed services.
+     *
+     * @param currentUserContext            The context holding the current user to prevent them from coming here.
+     * @param emailConfirmationTokenService Token service to check if received token exists.
+     */
     public EmailConfirmationController(CurrentUserContext currentUserContext,
                                        EmailConfirmationTokenService emailConfirmationTokenService) {
         this.currentUserContext = currentUserContext;
         this.emailConfirmationTokenService = emailConfirmationTokenService;
     }
 
+    /**
+     * Endpoint which returns to confirm frontend page.
+     *
+     * @param error The error code if something goes wrong. Should be set by other endpoints.
+     * @param model The model for the template.
+     * @return The template of the confirm page or a redirect if the user is already logged in.
+     */
     @GetMapping({"/confirm", "/confirm/"})
     public String confirmEmailPage(
             @RequestParam(name = "error", required = false, defaultValue = "0") int error,
@@ -43,6 +59,12 @@ public class EmailConfirmationController {
         return "emailConfirmPage";
     }
 
+    /**
+     * Endpoint to confirm the given token. Will confirm the email that the token maps to.
+     *
+     * @param token The token used to confirm an email.
+     * @return A redirect back to a frontend page depending on failure or success.
+     */
     @PostMapping({"/confirm", "/confirm/"})
     public String confirmEmailProcedure(@ModelAttribute(name = "token") String token) {
         if (currentUserContext.userExists()) {
