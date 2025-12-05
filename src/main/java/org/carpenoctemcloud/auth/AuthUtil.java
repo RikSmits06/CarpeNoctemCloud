@@ -6,6 +6,9 @@ import java.security.SecureRandom;
  * Utility class to make authentication easier.
  */
 public class AuthUtil {
+    private final static char[] charSet =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz".toCharArray();
+
     private AuthUtil() {
     }
 
@@ -16,14 +19,12 @@ public class AuthUtil {
      * @return The token in string format.
      */
     public static String randomToken(int tokenLength) {
-        char[] charSet =
-                "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz".toCharArray();
         StringBuilder ret = new StringBuilder();
         SecureRandom random = new SecureRandom();
 
-        for (int i = 0; i < tokenLength; i++) {
-            ret.append(charSet[random.nextInt(0, charSet.length)]);
-        }
+        random.ints(tokenLength, 0, charSet.length).forEach(i -> {
+            ret.append(charSet[i]);
+        });
 
         return ret.toString();
     }
