@@ -24,9 +24,10 @@ public class CleanupTask {
     /**
      * Constructor of the CleanupTask. It requires the RemoteFileService to delete old files.
      *
-     * @param fileService      The RemoteFileService which will be able to delete old files.
-     * @param logService       The service which will add records of the cleanup tasks.
-     * @param authTokenService The service used to clean up  old auth tokens.
+     * @param fileService                   The RemoteFileService which will be able to delete old files.
+     * @param logService                    The service which will add records of the cleanup tasks.
+     * @param authTokenService              The service used to clean up  old auth tokens.
+     * @param emailConfirmationTokenService Service used to clean up old email tokens.
      */
     public CleanupTask(DeleteTaskLogService logService, RemoteFileService fileService,
                        AuthTokenService authTokenService,
@@ -58,6 +59,9 @@ public class CleanupTask {
         authTokenService.deleteOldTokens();
     }
 
+    /**
+     * Cleans up all old email tokens.
+     */
     @Scheduled(cron = "0 0/15 * * * *")
     public void cleanupEmailConfirmationTokens() {
         emailConfirmationTokenService.cleanupOldTokens();

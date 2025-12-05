@@ -1,26 +1,37 @@
 package org.carpenoctemcloud.remote_file_system;
 
 import java.util.List;
-import java.util.Optional;
 import org.carpenoctemcloud.directory.Directory;
 import org.carpenoctemcloud.directory.DirectoryMapper;
 import org.carpenoctemcloud.remote_file.RemoteFile;
 import org.carpenoctemcloud.remote_file.RemoteFileMapper;
-import org.carpenoctemcloud.server.Server;
-import org.carpenoctemcloud.server.ServerMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service which queries the database to get information to reconstruct a file system.
+ */
 @Service
 public class RemoteFileSystemService {
     private final NamedParameterJdbcTemplate template;
 
+    /**
+     * Creates a new service.
+     *
+     * @param template The template linked to the database.
+     */
     public RemoteFileSystemService(NamedParameterJdbcTemplate template) {
         this.template = template;
     }
 
+    /**
+     * Gets the directories which are the children of the given directory.
+     *
+     * @param directoryID The id of the parent.
+     * @return A list of children.
+     */
     public List<Directory> getSubDirectories(long directoryID) {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("directoryID", directoryID);
@@ -30,6 +41,12 @@ public class RemoteFileSystemService {
                                       """, source, new DirectoryMapper());
     }
 
+    /**
+     * The top level directory of a server.
+     *
+     * @param serverID The server to get the top level of.
+     * @return List of directories which have no parent except the server itself.
+     */
     public List<Directory> getTopLevelDirectories(long serverID) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("serverID", serverID);
         return template.query("""
@@ -39,6 +56,12 @@ public class RemoteFileSystemService {
                                       """, source, new DirectoryMapper());
     }
 
+    /**
+     * Retrieves files which are in a given directory.
+     *
+     * @param directoryID The id of the directory.
+     * @return A list of the files which are children.
+     */
     public List<RemoteFile> getRemoteFilesInDirectory(long directoryID) {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("directoryID", directoryID);
