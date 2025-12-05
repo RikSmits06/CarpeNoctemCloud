@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @CNCloudTestNoDatabase
 @AutoConfigureEmbeddedDatabase(provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.EMBEDDED,
-        refresh = AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_CLASS)
+        refresh = AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CNCloudTest {
 }
