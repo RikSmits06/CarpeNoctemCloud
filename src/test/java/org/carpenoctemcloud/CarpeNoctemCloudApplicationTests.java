@@ -4,7 +4,7 @@ import org.carpenoctemcloud.account.AccountService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@CNCloudTest
+@CNCloudTestNoDatabase
 class CarpeNoctemCloudApplicationTests {
 
     @Autowired
