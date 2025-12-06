@@ -56,6 +56,13 @@ public class StarredRemoteFilesService {
                                 """, source);
     }
 
+    /**
+     * Checks if a file has been starred by a user.
+     *
+     * @param accountID The id of the account.
+     * @param fileID    The file to check.
+     * @return True if the account has starred the file, False otherwise.
+     */
     public boolean isFileStarred(int accountID, long fileID) {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("account", accountID).addValue("file", fileID);

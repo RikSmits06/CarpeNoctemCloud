@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * The controller used to sign up the user.
+ */
 @Controller
 @RequestMapping("/auth")
 @RequestScope
@@ -24,6 +27,14 @@ public class SignUpController {
     private final EmailConfirmationTokenService emailConfirmationTokenService;
     private final EmailService emailService;
 
+    /**
+     * Creates a new controller for sign-ups.
+     *
+     * @param accountService                The account service to register a new account.
+     * @param currentUserContext            The context holding a potential user in case of existing users visiting the url.
+     * @param emailConfirmationTokenService The service to get new confirmation tokens.
+     * @param emailService                  Used to send emails with the confirmation tokens.
+     */
     public SignUpController(AccountService accountService, CurrentUserContext currentUserContext,
                             EmailConfirmationTokenService emailConfirmationTokenService,
                             EmailService emailService) {
@@ -33,6 +44,13 @@ public class SignUpController {
         this.emailService = emailService;
     }
 
+    /**
+     * Renders the page which is used by the user to create an account.
+     *
+     * @param error Value set by other endpoints if something goes wrong.
+     * @param model Used to render the template.
+     * @return A template which the user uses to register.
+     */
     @GetMapping({"/signup", "/signup/"})
     public String createAccountPage(
             @RequestParam(name = "error", required = false, defaultValue = "0") int error,
@@ -53,6 +71,14 @@ public class SignUpController {
         return "signUpPage";
     }
 
+    /**
+     * Endpoint which actually creates the account.
+     *
+     * @param email    Of the new account.
+     * @param password Credential for the new account.
+     * @param name     The name of the user.
+     * @return A redirect to the confirmation page.
+     */
     @PostMapping({"/signup", "/signup/"})
     public String createAccountProcedure(@ModelAttribute(name = "email") String email,
                                          @ModelAttribute(name = "password") String password,

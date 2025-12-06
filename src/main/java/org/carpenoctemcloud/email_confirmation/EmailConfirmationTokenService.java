@@ -7,11 +7,19 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service which manages the {@code email_confirmation_token} table in the database.
+ */
 @Service
 public class EmailConfirmationTokenService {
 
     private final NamedParameterJdbcTemplate template;
 
+    /**
+     * Creates a new instance of the service.
+     *
+     * @param template The template used to query the datasource.
+     */
     public EmailConfirmationTokenService(NamedParameterJdbcTemplate template) {
         this.template = template;
     }
