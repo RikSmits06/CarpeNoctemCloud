@@ -18,9 +18,10 @@ class AccountServiceTest {
     public void accountCreationTest() {
         String email = "test@student.utwente.nl";
         String name = "Ben Dover";
+        String password = "12345678";
 
         // Account creating should work.
-        int id = accountService.createAccount(name, email, "12345678", false);
+        int id = accountService.createAccount(name, email, password, false);
         Optional<Account> accountOpt = accountService.getAccountByEmail(email);
         assertTrue(accountOpt.isPresent());
 
@@ -31,6 +32,7 @@ class AccountServiceTest {
         assertFalse(account.emailConfirmed());
         assertFalse(account.isAdmin());
         assertEquals(name, account.name());
+        assertNotEquals(password, account.encodedPassword());
 
         // Activating account should also work.
         accountService.activateAccount(id);

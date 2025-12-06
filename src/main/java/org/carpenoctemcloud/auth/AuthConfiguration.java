@@ -29,6 +29,11 @@ public class AuthConfiguration {
     public static final int MAX_AGE_EMAIL_CONFIRMATION_IN_HOURS = 2;
 
     /**
+     * The size in bytes of the auth token sent to the client.
+     */
+    public static final int AUTH_TOKEN_LENGTH = 256;
+
+    /**
      * Creates a new AuthConfiguration but should not be done manually but through Spring Boot.
      */
     public AuthConfiguration() {
