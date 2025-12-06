@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Controller which allows to request another email confirmation.
+ */
 @RequestScope
 @Controller
 @RequestMapping("/auth")
@@ -23,6 +26,14 @@ public class RequestConfirmationController {
     private final EmailConfirmationTokenService emailConfirmationTokenService;
     private final EmailService emailService;
 
+    /**
+     * Generates a new controller.
+     *
+     * @param currentUserContext            The current user needed to check that only non-logged in users are connecting.
+     * @param accountService                The service used to get account information.
+     * @param emailConfirmationTokenService The service used to get new email tokens.
+     * @param emailService                  The service used to send emails containing the token.
+     */
     public RequestConfirmationController(CurrentUserContext currentUserContext,
                                          AccountService accountService,
                                          EmailConfirmationTokenService emailConfirmationTokenService,
@@ -33,6 +44,13 @@ public class RequestConfirmationController {
         this.emailService = emailService;
     }
 
+    /**
+     * Returns the page to request an email confirmation.
+     *
+     * @param error The error, should be given by other endpoints.
+     * @param model The model of the template.
+     * @return The page to render.
+     */
     @GetMapping({"/request-confirmation", "/request-confirmation/"})
     public String emailConfirmationPage(
             @RequestParam(name = "error", required = false, defaultValue = "0") int error,
@@ -53,6 +71,12 @@ public class RequestConfirmationController {
         return "requestActivationPage";
     }
 
+    /**
+     * Endpoint which starts the procedure of sending a confirmation email.
+     *
+     * @param email The email to confirm again.
+     * @return The redirect to a template to render.
+     */
     @PostMapping({"/request-confirmation", "/request-confirmation/"})
     public String emailConfirmationProcedure(@ModelAttribute(name = "email") String email) {
         if (currentUserContext.userExists()) {

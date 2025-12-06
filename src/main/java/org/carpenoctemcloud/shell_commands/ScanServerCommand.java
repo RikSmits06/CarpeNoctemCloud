@@ -34,6 +34,8 @@ public class ScanServerCommand {
      *
      * @param fileService      The service used to store files.
      * @param directoryService Service given to the listeners to create directories.
+     * @param indexingTask     The task used to index servers.
+     * @param serverService    Service used to get all servers.
      */
     public ScanServerCommand(RemoteFileService fileService, DirectoryService directoryService,
                              IndexingTask indexingTask, ServerService serverService) {

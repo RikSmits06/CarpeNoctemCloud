@@ -40,6 +40,12 @@ public class DirectoryService {
                                 """, source);
     }
 
+    /**
+     * Gets directory by its id.
+     *
+     * @param id The id of the directory that needs to be found.
+     * @return Directory or an empty optional if the directory does not exist.
+     */
     public Optional<Directory> getDirectory(long id) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("id", id);
         List<Directory> directory = template.query("""

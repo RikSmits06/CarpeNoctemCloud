@@ -77,6 +77,12 @@ public class AccountService {
         return Optional.of(accounts.getFirst());
     }
 
+    /**
+     * Matches an email to an account.
+     *
+     * @param email The email to map to an account.
+     * @return The optional containing an account or an empty optional if the email does not exist.
+     */
     public Optional<Account> getAccountByEmail(String email) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("email", email);
         List<Account> accounts = template.query("""
