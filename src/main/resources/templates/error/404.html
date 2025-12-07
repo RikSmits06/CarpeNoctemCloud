@@ -1,11 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Page not found</title>
+    <title>Page Not Found</title>
 </head>
+
 <body>
-    <h1>404 - Page not found</h1>
-    <p>The page you are looking for does not exist or has been moved.</p>
+
+<!-- HEADER -->
+<th:block th:replace="components/header :: header"></th:block>
+
+<div class="container mt-5">
+    <h1 class="text-danger">404 - Page Not Found</h1>
+
+    <p>
+        The requested page <strong><span th:text="${path}"></span></strong> could not be found.
+    </p>
+
+    <p>Status code: <span th:text="${status}"></span></p>
+
+    <p th:if="${message != null}">
+        Details: <span th:text="${message}"></span>
+    </p>
+
+    <a class="btn btn-primary mt-3" href="/">Back to Home</a>
+</div>
+
+<!-- FOOTER -->
+<th:block th:replace="components/footer :: footer"></th:block>
+
 </body>
 </html>
