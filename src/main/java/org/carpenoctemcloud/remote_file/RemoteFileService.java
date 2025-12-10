@@ -67,10 +67,15 @@ public class RemoteFileService {
             search = null;
         }
 
+        // Convert list to integer array for postgresql
+        Integer[] categoryArray = (categoryIDs != null && !categoryIDs.isEmpty()) 
+                ? categoryIDs.toArray(new Integer[0]) 
+                : null;
+
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("offset", offset).addValue("search", search)
                         .addValue("limit", ConfigurationConstants.MAX_FETCH_SIZE)
-                        .addValue("categoryIDs", categoryIDs != null && !categoryIDs.isEmpty() ? categoryIDs : null);
+                        .addValue("categoryIDs", categoryArray);
 
         return template.query("""
                                       select *, ts_rank(search_vector, websearch_to_tsquery(:search)) AS rankings
