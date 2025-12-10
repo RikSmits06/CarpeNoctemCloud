@@ -104,7 +104,9 @@ public class FileSystemController {
         model.addAttribute("currentDirectory", currentDirectory);
         model.addAttribute("subDirectories", subDirectories);
         model.addAttribute("files", files);
-        model.addAttribute("categories", categoryService.getAllCategories());
+        if (!files.isEmpty()) {
+            model.addAttribute("categories", categoryService.getAllCategories());
+        }
         return "directorySystemPage";
     }
 }

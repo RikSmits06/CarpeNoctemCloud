@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 import static org.carpenoctemcloud.configuration.ConfigurationConstants.MAX_FETCH_SIZE;
 
 /**
@@ -38,23 +40,23 @@ public class SearchPageController {
      * @param model      The model which contains the variables to be rendered.
      * @param query      The search query given to the user.
      * @param offset     The offset of the search query.
-     * @param categoryID The category id to filter on.
+     * @param categoryIDs The category id to filter on.
      * @return The template of the search page with the found results.
      */
     @GetMapping({"", "/"})
     public String searchPage(Model model,
                              @RequestParam(required = false, defaultValue = "") String query,
                              @RequestParam(required = false, defaultValue = "0") Integer offset,
-                             @RequestParam(required = false, defaultValue = "", name = "cat")
-                             Integer categoryID) {
+                             @RequestParam(required = false, name = "cat")
+                             List<Integer> categoryIDs) {
         offset = (offset > 0) ? offset : 0;
 
         model.addAttribute("query", query);
         model.addAttribute("offset", offset);
         model.addAttribute("maxFetchSize", MAX_FETCH_SIZE);
-        model.addAttribute("results", fileService.searchRemoteFiles(query, offset, categoryID));
+        model.addAttribute("results", fileService.searchRemoteFiles(query, offset, categoryIDs));
         model.addAttribute("categories", categoryService.getAllCategories());
-        model.addAttribute("currentCategory", categoryID);
+        model.addAttribute("selectedCategories", categoryIDs != null ? categoryIDs : new java.util.ArrayList<>());
 
         return "searchPage";
     }

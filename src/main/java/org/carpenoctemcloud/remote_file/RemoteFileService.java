@@ -52,16 +52,17 @@ public class RemoteFileService {
         this.addRemoteFiles(new ArrayList<>(List.of(indexedFile)));
     }
 
+
     /**
      * Searches for RemoteFiles matching the search parameter.
      * The list is at most equal to the max fetch size set in {@link ConfigurationConstants}.
      *
-     * @param search     The search parameter, can be null or empty.
-     * @param offset     The offset of the search.
-     * @param categoryID The id of the category to search can be null.
+     * @param search      The search parameter, can be null or empty.
+     * @param offset      The offset of the search.
+     * @param categoryIDs The list of category ids to search, can be null or empty.
      * @return The list of remote files matching the input.
      */
-    public List<RemoteFile> searchRemoteFiles(String search, int offset, Integer categoryID) {
+    public List<RemoteFile> searchRemoteFiles(String search, int offset, List<Integer> categoryIDs) {
         if (search.isBlank()) {
             search = null;
         }
@@ -69,14 +70,14 @@ public class RemoteFileService {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("offset", offset).addValue("search", search)
                         .addValue("limit", ConfigurationConstants.MAX_FETCH_SIZE)
-                        .addValue("cid", categoryID);
+                        .addValue("categoryIDs", categoryIDs != null && !categoryIDs.isEmpty() ? categoryIDs : null);
 
         return template.query("""
                                       select *, ts_rank(search_vector, websearch_to_tsquery(:search)) AS rankings
                                       from remote_file
                                       where (case
-                                                 when (cast(:cid as integer) is not null)
-                                                     then category_id = :cid
+                                                 when (cast(:categoryIDs as integer[]) is not null)
+                                                     then category_id = ANY(:categoryIDs)
                                                  else true
                                           end)
                                         and (case
