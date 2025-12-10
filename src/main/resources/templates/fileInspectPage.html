@@ -10,7 +10,7 @@
 </head>
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 <!-- nav -->
-<div th:replace="components/header :: header (activePage = 'search')"></div>
+<div th:replace="~{components/header :: header (activePage = 'search')}"></div>
 <!-- content -->
 <main class="my-3 flex-grow-1">
     <div class="my-2 w-75 mx-auto">
@@ -97,6 +97,6 @@
     </div>
 </main>
 <!-- footer -->
-<div th:replace="components/footer :: footer"></div>
+<div th:replace="~{components/footer :: footer}"></div>
 </body>
 </html>

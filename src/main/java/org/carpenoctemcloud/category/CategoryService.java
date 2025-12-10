@@ -33,6 +33,12 @@ public class CategoryService {
         return template.query("select * from category;", new CategoryMapper());
     }
 
+    /**
+     * Retrieves a given category using its id.
+     *
+     * @param id The id of the category.
+     * @return A category object wrapped in optional.
+     */
     public Optional<Category> getCategory(int id) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("id", id);
         List<Category> categoryList = template.query("""

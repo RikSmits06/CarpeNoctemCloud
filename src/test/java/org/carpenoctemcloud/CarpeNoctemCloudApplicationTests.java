@@ -1,18 +1,20 @@
 package org.carpenoctemcloud;
 
+import org.carpenoctemcloud.account.AccountService;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.shell.jline.InteractiveShellRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@SpringBootTest(properties = {"spring.shell.interactive.enabled=false", "spring.shell.script.enabled=false"})
+@CNCloudTestNoDatabase
 class CarpeNoctemCloudApplicationTests {
 
+    @Autowired
+    private AccountService accountService;
+
     /**
-     * Test is supposed to be empty to test the loading of the apps context.
+     * Test is supposed to be empty to test the loading of the apps' context.
      */
     @Test
     @SuppressWarnings("empty")
     void contextLoads() {
     }
-
 }

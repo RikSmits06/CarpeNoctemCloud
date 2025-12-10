@@ -39,7 +39,10 @@ public class FileInspectController {
     /**
      * Creates a new controller instance.
      *
-     * @param fileService The file service to query the files through.
+     * @param fileService               The file service to query the files through.
+     * @param categoryService           Service used to list categories.
+     * @param currentUserContext        The context of the current user. Used to check if they starred a file.
+     * @param starredRemoteFilesService Used to check if the current user starred a file.
      */
     public FileInspectController(RemoteFileService fileService, CategoryService categoryService,
                                  StarredRemoteFilesService starredRemoteFilesService,
@@ -90,6 +93,12 @@ public class FileInspectController {
         return "fileInspectPage";
     }
 
+    /**
+     * Toggles if a file has been starred.
+     *
+     * @param id The id of the file to toggle.
+     * @return Redirect back to the files' inspect page.
+     */
     @PostMapping({"{id}/star", "{id}/star/"})
     public String toggleStar(@PathVariable long id) {
         Optional<Account> userOpt = currentUserContext.getUser();

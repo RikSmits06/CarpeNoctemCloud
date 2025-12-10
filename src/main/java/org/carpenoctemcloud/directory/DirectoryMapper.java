@@ -5,7 +5,17 @@ import java.sql.SQLException;
 import java.util.Optional;
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * Mapper object to map a result object into an {@link Directory}.
+ */
 public class DirectoryMapper implements RowMapper<Directory> {
+
+    /**
+     * Empty constructor which makes a new mapper.
+     */
+    public DirectoryMapper() {
+    }
+
     @Override
     public Directory mapRow(ResultSet rs, int rowNum) throws SQLException {
         long parentDirectory = rs.getLong("parent_directory");
@@ -15,6 +25,7 @@ public class DirectoryMapper implements RowMapper<Directory> {
         String path = rs.getString("path");
         String[] pathSplit = path.split("/");
         String name = pathSplit[pathSplit.length - 1];
-        return new Directory(rs.getLong("id"), path, name, parentDirectoryOpt, rs.getInt("server_id"));
+        return new Directory(rs.getLong("id"), path, name, parentDirectoryOpt,
+                             rs.getInt("server_id"));
     }
 }

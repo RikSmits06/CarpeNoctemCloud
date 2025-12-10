@@ -95,7 +95,7 @@ public class AuthTokenService {
             return Optional.empty();
         }
 
-        String token = AuthUtil.randomToken(256);
+        String token = AuthUtil.randomToken(AuthConfiguration.AUTH_TOKEN_LENGTH);
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("email", email).addValue("token", token)
                         .addValue("expireHours", AuthConfiguration.MAX_AGE_AUTH_TOKEN_IN_HOURS);

@@ -9,7 +9,7 @@
 </head>
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 <!-- nav -->
-<div th:replace="components/header :: header (activePage = 'login')"></div>
+<div th:replace="~{components/header :: header (activePage = 'login')}"></div>
 
 <main class="flex-grow-1 d-flex my-4 justify-content-center">
     <div class="d-flex flex-column align-items-center gap-4">
@@ -38,7 +38,7 @@
 </main>
 
 <!-- footer -->
-<div th:replace="components/footer :: footer"></div>
+<div th:replace="~{components/footer :: footer}"></div>
 
 </body>
 </html>
