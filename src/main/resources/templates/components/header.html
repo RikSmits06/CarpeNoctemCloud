@@ -45,7 +45,7 @@
                 <li class="nav-item">
                     <a class="nav-link"
                        th:classappend="${activePage == 'about'} ? ' active'"
-                       href="#">About</a>
+                       href="/">About</a>
                 </li>
 
                 <li class="nav-item" th:if="${currentUser == null}">
@@ -59,7 +59,7 @@
 
                 <li class="nav-item" th:if="${currentUser != null}">
                     <a class="nav-link" href="/account/profile">
-                        <img th:src="@{/img/user.svg}" alt="User Icon" class="fileImage">
+                        <img th:src="@{/img/user.svg}" alt="User Icon" class="fileImage platformImage">
                     </a>
                 </li>
             </ul>

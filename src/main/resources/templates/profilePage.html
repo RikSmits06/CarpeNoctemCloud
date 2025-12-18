@@ -4,13 +4,22 @@
 </head>
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 <!-- nav -->
-<div th:replace="~{components/header :: header (activePage = 'login')}"></div>
+<div th:replace="~{components/header :: header (activePage = 'profile')}"></div>
 
-<main class="flex-grow-1 d-flex my-4 justify-content-center">
-    <div class="d-flex flex-column align-items-center gap-4">
+<main class="flex-column flex-grow-1 d-flex p-5">
+
+    <div class="my-2 w-75 mx-auto">
         <h1>Profile Page</h1>
         <!-- Login form -->
-        <h3 th:text="${user.name()}"></h3>
+        <h4 th:text="'Welcome ' + ${user.name()}"></h4>
+        <div class="my-4">
+            <h5>Starred files</h5>
+            <div class="flex-column justify-content-center overflow-auto" style="max-height: 500px;">
+                <div th:each="result : ${starredFiles}">
+                    <div th:replace="~{components/searchResult :: result(resultRef=${result}, categories=${categories})}"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
