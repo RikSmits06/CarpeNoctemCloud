@@ -103,3 +103,7 @@ a:hover .platformImage {
 .category {
     width: 12rem;
 }
+
+.dropdown-menu {
+    box-shadow: 0 0.4rem 0.75rem rgba(0, 0, 0, 0.4);
+}

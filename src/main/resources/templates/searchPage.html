@@ -26,18 +26,31 @@
                     placeholder="Search..."
                     type="search" name="query"
                     id="inputQuery">
-            <label class="category">
-                <select name="cat"
-                        class="form-select select rounded-start-0 rounded-end-0">
-                    <option value="" th:selected="${currentCategory==null}">none...</option>
-                    <option th:each="cat : ${categories}"
-                            th:selected="${currentCategory == cat.id()}" th:text="${cat.name()}"
-                            th:value="${cat.id()}"></option>
-                </select>
-            </label>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle rounded-start-0 rounded-end-0"
+                        type="button"
+                        id="categoryDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Categories
+                </button>
+                <div class="dropdown-menu p-2" aria-labelledby="categoryDropdown" style="min-width: 200px;">
+                    <div th:each="cat : ${categories}" class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="cat"
+                               th:value="${cat.id()}"
+                               th:id="'cat' + ${cat.id()}"
+                               th:checked="${selectedCategories.contains(cat.id())}">
+                        <label class="form-check-label" th:for="'cat' + ${cat.id()}" th:text="${cat.name()}">
+                        </label>
+                    </div>
+                </div>
+            </div>
             <input class="btn btn-primary rounded-start-0" type="submit" value="Submit">
         </form>
     </div>
+
     <!-- results -->
     <div class="my-2 w-75 mx-auto">
         <div class="flex-column justify-content-center">
@@ -56,6 +69,10 @@
             <label>
                 <input hidden="hidden" th:value="${query}" type="text" name="query">
             </label>
+            <input th:each="catId : ${selectedCategories}"
+                   type="hidden"
+                   name="cat"
+                   th:value="${catId}">
             <button type="submit" class="btn btn-primary">Previous</button>
         </form>
         <form action="/search" th:unless="${results.size() < maxFetchSize}">
@@ -66,9 +83,10 @@
             <label>
                 <input hidden="hidden" th:value="${query}" type="text" name="query">
             </label>
-            <label>
-                <input hidden="hidden" type="number" name="cat" th:value="${currentCategory}">
-            </label>
+            <input th:each="catId : ${selectedCategories}"
+                   type="hidden"
+                   name="cat"
+                   th:value="${catId}">
             <button type="submit" class="btn btn-primary">Next</button>
         </form>
     </div>
