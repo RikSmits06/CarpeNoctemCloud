@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="components/headComponent">
+<head th:replace="~{components/headComponent}">
 </head>
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 <!-- nav -->
@@ -12,10 +12,19 @@
         <h1>Profile Page</h1>
         <!-- Login form -->
         <h4 th:text="'Welcome ' + ${user.name()}"></h4>
+        <p><strong>Email: </strong> <span th:text="${user.email()}"></span></p>
         <div class="my-4">
             <h5>Starred files</h5>
             <div class="flex-column justify-content-center overflow-auto" style="max-height: 500px;">
                 <div th:each="result : ${starredFiles}">
+                    <div th:replace="~{components/searchResult :: result(resultRef=${result}, categories=${categories})}"></div>
+                </div>
+            </div>
+        </div>
+        <div class="my-4">
+            <h5>Recently downloaded files</h5>
+            <div class="flex-column justify-content-center overflow-auto" style="max-height: 500px;">
+                <div th:each="result : ${recentDownloads}">
                     <div th:replace="~{components/searchResult :: result(resultRef=${result}, categories=${categories})}"></div>
                 </div>
             </div>

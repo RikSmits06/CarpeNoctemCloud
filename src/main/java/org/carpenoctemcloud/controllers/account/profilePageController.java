@@ -2,6 +2,7 @@ package org.carpenoctemcloud.controllers.account;
 
 import org.carpenoctemcloud.auth.CurrentUserContext;
 import org.carpenoctemcloud.category.CategoryService;
+import org.carpenoctemcloud.request_logging.UserDownloadLogService;
 import org.carpenoctemcloud.starred_remote_files.StarredRemoteFilesService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,16 +21,18 @@ public class profilePageController {
     private final CurrentUserContext currentUserContext;
     private final StarredRemoteFilesService starredRemoteFilesService;
     private final CategoryService categoryService;
+    private final UserDownloadLogService userDownloadLogService;
 
     /**
      * Creates a new controller for the profile page.
      *
      * @param currentUserContext The context of the current user needed to set an active user.
      */
-    public profilePageController(CurrentUserContext currentUserContext, StarredRemoteFilesService starredRemoteFilesService, CategoryService categoryService) {
+    public profilePageController(CurrentUserContext currentUserContext, StarredRemoteFilesService starredRemoteFilesService, CategoryService categoryService, UserDownloadLogService userDownloadLogService) {
         this.currentUserContext = currentUserContext;
         this.starredRemoteFilesService = starredRemoteFilesService;
         this.categoryService = categoryService;
+        this.userDownloadLogService = userDownloadLogService;
     }
 
     /**
@@ -52,6 +55,7 @@ public class profilePageController {
             model.addAttribute("user", currentUserContext.getUser().get());
             model.addAttribute("starredFiles", starredRemoteFilesService.getStarredFiles(currentUserContext.getUser().get().id()));
             model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("recentDownloads", userDownloadLogService.getRecentDownloads(currentUserContext.getUser().get().id()));
         }
 
         return "profilePage";

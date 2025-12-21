@@ -1,11 +1,6 @@
 package org.carpenoctemcloud.controllers;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import org.carpenoctemcloud.auth.CurrentUserContext;
 import org.carpenoctemcloud.redirect_files.RedirectFileCreator;
 import org.carpenoctemcloud.redirect_files.RedirectFileFactory;
 import org.carpenoctemcloud.redirect_files.RedirectFilePlatform;
@@ -13,21 +8,37 @@ import org.carpenoctemcloud.remote_file.RemoteFile;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Collection of endpoints which handles sending a downloadable file to the client.
  * This downloadable file is what will redirect the client.
  */
+@Component
+@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Controller
 @SuppressWarnings("SameReturnValue")
 @RequestMapping("/redirect-file")
@@ -35,14 +46,19 @@ public class RedirectFileController {
 
     private final RemoteFileService fileService;
     private final Logger logger = LoggerFactory.getLogger(RedirectFileController.class);
+    private final CurrentUserContext currentUserContext;
+    private final NamedParameterJdbcTemplate template;
+
 
     /**
      * Creates a new controller instance.
      *
      * @param fileService The file service to query the files through.
      */
-    public RedirectFileController(RemoteFileService fileService) {
+    public RedirectFileController(RemoteFileService fileService, CurrentUserContext currentUserContext, NamedParameterJdbcTemplate template) {
         this.fileService = fileService;
+        this.currentUserContext = currentUserContext;
+        this.template = template;
     }
 
     /**
@@ -77,18 +93,27 @@ public class RedirectFileController {
                 zipStream.closeEntry();
             } catch (IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                                  "Error creating zip file.");
+                        "Error creating zip file.");
             }
             output = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         } else {
             output = new ByteArrayInputStream(content.getBytes());
         }
 
+        // Check if there is a user logged in
+        if (currentUserContext.userExists() && currentUserContext.getUser().isPresent()) {
+            // Add the download to the user download log
+            SqlParameterSource source = new MapSqlParameterSource().addValue("remoteFileId", id).addValue("userId", currentUserContext.getUser().get().id());
+            template.update("""
+                    insert into user_download_log(uid, day, remote_file_id)
+                    values (:userId, current_date, :remoteFileId);
+                    """, source);
+        }
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                                          "attachment; filename=" + file.name() +
-                                                  (fileCreator.compressFile() ? ".zip" :
-                                                          fileCreator.getFileExtension()))
+                        "attachment; filename=" + file.name() +
+                                (fileCreator.compressFile() ? ".zip" :
+                                        fileCreator.getFileExtension()))
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new InputStreamResource(output));
     }
