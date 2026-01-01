@@ -22,6 +22,7 @@ public class VlcRedirectFileCreator implements RedirectFileCreator {
      */
     @Override
     public String createFileContent(String url) {
+        // https://wiki.videolan.org/.VLC/
         String[] split = url.split("://", 2);
         String protocol = split[0];
 
@@ -32,7 +33,7 @@ public class VlcRedirectFileCreator implements RedirectFileCreator {
         }
 
         url = protocol + "://" + "anonymous:1234@" + split[1];
-        return "[playlist]\n" + "File1=" + url + "\nNumberOfEntries=1";
+        return url;
     }
 
     /**
