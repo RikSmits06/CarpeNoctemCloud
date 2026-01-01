@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.carpenoctemcloud.CNCloudTest;
 import org.carpenoctemcloud.account.Account;
 import org.carpenoctemcloud.account.AccountService;
+import org.carpenoctemcloud.configuration.AuthConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package org.carpenoctemcloud.email_confirmation;
 
-import org.carpenoctemcloud.auth.AuthConfiguration;
+import org.carpenoctemcloud.configuration.AuthConfiguration;
 import org.carpenoctemcloud.auth.AuthUtil;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

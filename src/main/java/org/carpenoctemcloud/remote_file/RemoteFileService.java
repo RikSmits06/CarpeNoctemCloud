@@ -1,9 +1,5 @@
 package org.carpenoctemcloud.remote_file;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import org.carpenoctemcloud.configuration.ConfigurationConstants;
 import org.carpenoctemcloud.indexing.IndexedFile;
 import org.carpenoctemcloud.server.Server;
@@ -12,6 +8,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Class with methods to access the RemoteFile table.
@@ -39,8 +40,7 @@ public class RemoteFileService {
      */
     public int deleteOldRemoteFiles(Timestamp cutOff) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("cut_off", cutOff);
-        return template.update("DELETE FROM remote_file rf WHERE rf.last_indexed < :cut_off;",
-                               source);
+        return template.update("DELETE FROM remote_file rf WHERE rf.last_indexed < :cut_off;", source);
     }
 
     /**
@@ -68,30 +68,25 @@ public class RemoteFileService {
         }
 
         // Convert list to integer array for postgresql
-        Integer[] categoryArray = (categoryIDs != null && !categoryIDs.isEmpty()) 
-                ? categoryIDs.toArray(new Integer[0]) 
-                : null;
+        Integer[] categoryArray = (categoryIDs != null && !categoryIDs.isEmpty()) ? categoryIDs.toArray(new Integer[0]) : null;
 
-        SqlParameterSource source =
-                new MapSqlParameterSource().addValue("offset", offset).addValue("search", search)
-                        .addValue("limit", ConfigurationConstants.MAX_FETCH_SIZE)
-                        .addValue("categoryIDs", categoryArray);
+        SqlParameterSource source = new MapSqlParameterSource().addValue("offset", offset).addValue("search", search).addValue("limit", ConfigurationConstants.MAX_FETCH_SIZE).addValue("categoryIDs", categoryArray);
 
         return template.query("""
-                                      select *, ts_rank(search_vector, websearch_to_tsquery(:search)) AS rankings
-                                      from remote_file
-                                      where (case
-                                                 when (cast(:categoryIDs as integer[]) is not null)
-                                                     then category_id = ANY(:categoryIDs)
-                                                 else true
-                                          end)
-                                        and (case
-                                                 when (cast(:search as text) is not null)
-                                                     then search_vector @@ websearch_to_tsquery(:search)
-                                                 else true end)
-                                      order by rankings desc
-                                      limit :limit offset :offset;
-                                      """, source, new RemoteFileMapper());
+                select *, ts_rank(search_vector, websearch_to_tsquery(:search)) AS rankings
+                from remote_file
+                where (case
+                           when (cast(:categoryIDs as integer[]) is not null)
+                               then category_id = ANY(:categoryIDs)
+                           else true
+                    end)
+                  and (case
+                           when (cast(:search as text) is not null)
+                               then search_vector @@ websearch_to_tsquery(:search)
+                           else true end)
+                order by rankings desc
+                limit :limit offset :offset;
+                """, source, new RemoteFileMapper());
     }
 
     /**
@@ -102,9 +97,7 @@ public class RemoteFileService {
      */
     public Optional<RemoteFile> getRemoteFileByID(long id) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("id", id);
-        List<RemoteFile> result =
-                template.query("SELECT * FROM remote_file WHERE id=:id LIMIT 1;", source,
-                               new RemoteFileMapper());
+        List<RemoteFile> result = template.query("SELECT * FROM remote_file WHERE id=:id LIMIT 1;", source, new RemoteFileMapper());
         if (result.isEmpty()) {
             return Optional.empty();
         }
@@ -120,14 +113,14 @@ public class RemoteFileService {
     public String getDownloadURL(long fileID) {
         MapSqlParameterSource source = new MapSqlParameterSource().addValue("fileID", fileID);
         return template.query("""
-                                      select distinct download_prefix || '://' || host || path || rf.name as url
-                                      from remote_file rf,
-                                           directory dir,
-                                           server ser
-                                      where rf.id = :fileID
-                                        and rf.directory_id = dir.id
-                                        and ser.id = dir.server_id;
-                                      """, source, rs -> {
+                select distinct download_prefix || '://' || host || path || rf.name as url
+                from remote_file rf,
+                     directory dir,
+                     server ser
+                where rf.id = :fileID
+                  and rf.directory_id = dir.id
+                  and ser.id = dir.server_id;
+                """, source, rs -> {
             rs.next();
             return rs.getString("url");
         });
@@ -143,23 +136,21 @@ public class RemoteFileService {
 
         for (int i = 0; i < sources.length; i++) {
             IndexedFile file = indexedFiles.get(i);
-            SqlParameterSource source =
-                    new MapSqlParameterSource().addValue("name", file.filename())
-                            .addValue("server_name", file.host()).addValue("path", file.path());
+            SqlParameterSource source = new MapSqlParameterSource().addValue("name", file.filename()).addValue("server_name", file.host()).addValue("path", file.path());
             sources[i] = source;
         }
 
         template.batchUpdate("""
-                                     with dir as (insert into directory (path, server_id)
-                                         values (:path, (select id from server where host = :server_name limit 1))
-                                         on conflict on constraint unique_server_path
-                                             do update set server_id = directory.server_id returning id)
-                                     insert
-                                     into remote_file(name, directory_id)
-                                     select :name, dir.id
-                                     from dir
-                                     on conflict on constraint unique_file do update set last_indexed = now();
-                                     """, sources);
+                with dir as (insert into directory (path, server_id)
+                    values (:path, (select id from server where host = :server_name limit 1))
+                    on conflict on constraint unique_server_path
+                        do update set server_id = directory.server_id returning id)
+                insert
+                into remote_file(name, directory_id)
+                select :name, dir.id
+                from dir
+                on conflict on constraint unique_file do update set last_indexed = now();
+                """, sources);
     }
 
     /**
@@ -172,14 +163,14 @@ public class RemoteFileService {
         SqlParameterSource source = new MapSqlParameterSource().addValue("fileID", fileID);
 
         return template.query("""
-                                      select ser.*
-                                      from server ser,
-                                           directory dir,
-                                           remote_file rf
-                                      where rf.id = :fileID
-                                        and rf.directory_id = dir.id
-                                        and dir.server_id = ser.id
-                                      limit 1;
-                                      """, source, new ServerMapper()).getFirst();
+                select ser.*
+                from server ser,
+                     directory dir,
+                     remote_file rf
+                where rf.id = :fileID
+                  and rf.directory_id = dir.id
+                  and dir.server_id = ser.id
+                limit 1;
+                """, source, new ServerMapper()).getFirst();
     }
 }
