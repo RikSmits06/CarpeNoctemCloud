@@ -95,7 +95,7 @@ public class RedirectFileController {
 
         Optional<Account> requestingUser = currentUserContext.getUser();
         Integer requestingUserID = requestingUser.isPresent() ? requestingUser.get().id() : null;
-        downloadHistoryService.addFileToHistory(requestingUserID, id);
+        downloadHistoryService.addFileToHistory(requestingUserID, id, fileCreator.RedirectFileCreatorName());
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=" + file.name() +

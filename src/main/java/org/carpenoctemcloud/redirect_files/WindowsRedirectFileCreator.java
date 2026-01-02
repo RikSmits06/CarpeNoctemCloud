@@ -3,7 +3,7 @@ package org.carpenoctemcloud.redirect_files;
 /**
  * Creates an .url file for Windows users.
  */
-public class WindowsRedirectFileCreator implements RedirectFileCreator {
+public class WindowsRedirectFileCreator extends RedirectFileCreator {
 
     /**
      * Default constructor so that only the {@link RedirectFileFactory} can create an instance.

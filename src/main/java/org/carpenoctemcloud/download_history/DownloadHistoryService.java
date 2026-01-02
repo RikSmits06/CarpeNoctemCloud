@@ -18,11 +18,15 @@ public class DownloadHistoryService {
         this.template = template;
     }
 
-    public void addFileToHistory(Integer accountID, int fileID) {
-        SqlParameterSource source = new MapSqlParameterSource().addValue("accountID", accountID).addValue("fileID", fileID);
+    public void addFileToHistory(Integer accountID, int fileID, String redirectorName) {
+        SqlParameterSource source = new MapSqlParameterSource()
+                .addValue("accountID", accountID)
+                .addValue("fileID", fileID)
+                .addValue("redirectorName", redirectorName);
 
         template.update("""
-                insert into download_history(account_id, remote_file_id) values (:accountID, :fileID);
+                insert into download_history(account_id, remote_file_id, redirector_used) 
+                values (:accountID, :fileID, :redirectorName);
                 """, source);
     }
 
