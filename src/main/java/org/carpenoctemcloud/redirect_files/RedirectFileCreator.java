@@ -5,6 +5,13 @@ package org.carpenoctemcloud.redirect_files;
  * For instance, windows has .url files while macOS has .webloc files.
  */
 public abstract class RedirectFileCreator {
+
+    /**
+     * Creates a new RedirectFileCreator.
+     */
+    public RedirectFileCreator() {
+    }
+
     /**
      * Creates the content of a file to redirect towards the resource at the url.
      *
@@ -31,6 +38,11 @@ public abstract class RedirectFileCreator {
         return true;
     }
 
+    /**
+     * Gets the name of the RedirectFileCreator class used to create the redirect file.
+     *
+     * @return The string containing the class name.
+     */
     public final String RedirectFileCreatorName() {
         return this.getClass().getSimpleName();
     }
