@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Creates file content for vlc files. They open directly in vlc.
  */
-public class VlcRedirectFileCreator implements RedirectFileCreator {
+public class VlcRedirectFileCreator extends RedirectFileCreator {
 
     /**
      * Creates a new VlcRedirectFileCreator, it does not use any dependencies.
