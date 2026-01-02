@@ -1,11 +1,8 @@
 package org.carpenoctemcloud.controllers;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import org.carpenoctemcloud.account.Account;
+import org.carpenoctemcloud.auth.CurrentUserContext;
+import org.carpenoctemcloud.download_history.DownloadHistoryService;
 import org.carpenoctemcloud.redirect_files.RedirectFileCreator;
 import org.carpenoctemcloud.redirect_files.RedirectFileFactory;
 import org.carpenoctemcloud.redirect_files.RedirectFilePlatform;
@@ -22,27 +19,39 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Collection of endpoints which handles sending a downloadable file to the client.
  * This downloadable file is what will redirect the client.
  */
 @Controller
-@SuppressWarnings("SameReturnValue")
 @RequestMapping("/redirect-file")
+@RequestScope
 public class RedirectFileController {
 
     private final RemoteFileService fileService;
     private final Logger logger = LoggerFactory.getLogger(RedirectFileController.class);
+    private final CurrentUserContext currentUserContext;
+    private final DownloadHistoryService downloadHistoryService;
 
     /**
      * Creates a new controller instance.
      *
      * @param fileService The file service to query the files through.
      */
-    public RedirectFileController(RemoteFileService fileService) {
+    public RedirectFileController(RemoteFileService fileService, CurrentUserContext currentUserContext, DownloadHistoryService downloadHistoryService) {
         this.fileService = fileService;
+        this.currentUserContext = currentUserContext;
+        this.downloadHistoryService = downloadHistoryService;
     }
 
     /**
@@ -77,18 +86,21 @@ public class RedirectFileController {
                 zipStream.closeEntry();
             } catch (IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                                  "Error creating zip file.");
+                        "Error creating zip file.");
             }
             output = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         } else {
             output = new ByteArrayInputStream(content.getBytes());
         }
 
+        Optional<Account> requestingUser = currentUserContext.getUser();
+        Integer requestingUserID = requestingUser.isPresent() ? requestingUser.get().id() : null;
+        downloadHistoryService.addFileToHistory(requestingUserID, id);
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                                          "attachment; filename=" + file.name() +
-                                                  (fileCreator.compressFile() ? ".zip" :
-                                                          fileCreator.getFileExtension()))
+                        "attachment; filename=" + file.name() +
+                                (fileCreator.compressFile() ? ".zip" :
+                                        fileCreator.getFileExtension()))
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new InputStreamResource(output));
     }
