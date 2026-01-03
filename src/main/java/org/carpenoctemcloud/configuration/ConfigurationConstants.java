@@ -16,6 +16,11 @@ public class ConfigurationConstants {
      */
     public static final int MAX_FETCH_SIZE = 20;
 
+    /**
+     * Limits the amount of recently downloaded films that will be displayed.
+     */
+    public static final int MAX_FETCH_SIZE_HISTORY = 10;
+
     private ConfigurationConstants() {
     }
 }

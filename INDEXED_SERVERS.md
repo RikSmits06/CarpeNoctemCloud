@@ -14,3 +14,4 @@ drives. These where the drives that where found:
 * stroopwafel.student.utwente.nl
 * spitfire.student.utwente.nl
 * campuslaan53.student.utwente.nl
+* kaasufo.student.utwente.nl

@@ -1,6 +1,8 @@
 package org.carpenoctemcloud.controllers;
 
+import org.carpenoctemcloud.account.Account;
 import org.carpenoctemcloud.auth.CurrentUserContext;
+import org.carpenoctemcloud.download_history.DownloadHistoryService;
 import org.carpenoctemcloud.redirect_files.RedirectFileCreator;
 import org.carpenoctemcloud.redirect_files.RedirectFileFactory;
 import org.carpenoctemcloud.redirect_files.RedirectFilePlatform;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -37,28 +40,27 @@ import java.util.zip.ZipOutputStream;
  * Collection of endpoints which handles sending a downloadable file to the client.
  * This downloadable file is what will redirect the client.
  */
-@Component
-@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Controller
-@SuppressWarnings("SameReturnValue")
 @RequestMapping("/redirect-file")
+@RequestScope
 public class RedirectFileController {
 
     private final RemoteFileService fileService;
     private final Logger logger = LoggerFactory.getLogger(RedirectFileController.class);
     private final CurrentUserContext currentUserContext;
-    private final NamedParameterJdbcTemplate template;
-
+    private final DownloadHistoryService downloadHistoryService;
 
     /**
      * Creates a new controller instance.
      *
-     * @param fileService The file service to query the files through.
+     * @param fileService            The file service to query the files through.
+     * @param currentUserContext     The context containing the currently logged-in user.
+     * @param downloadHistoryService The service used to add files to download history.
      */
-    public RedirectFileController(RemoteFileService fileService, CurrentUserContext currentUserContext, NamedParameterJdbcTemplate template) {
+    public RedirectFileController(RemoteFileService fileService, CurrentUserContext currentUserContext, DownloadHistoryService downloadHistoryService) {
         this.fileService = fileService;
         this.currentUserContext = currentUserContext;
-        this.template = template;
+        this.downloadHistoryService = downloadHistoryService;
     }
 
     /**
@@ -100,15 +102,9 @@ public class RedirectFileController {
             output = new ByteArrayInputStream(content.getBytes());
         }
 
-        // Check if there is a user logged in
-        if (currentUserContext.userExists() && currentUserContext.getUser().isPresent()) {
-            // Add the download to the user download log
-            SqlParameterSource source = new MapSqlParameterSource().addValue("remoteFileId", id).addValue("userId", currentUserContext.getUser().get().id());
-            template.update("""
-                    insert into user_download_log(uid, day, remote_file_id)
-                    values (:userId, current_date, :remoteFileId);
-                    """, source);
-        }
+        Optional<Account> requestingUser = currentUserContext.getUser();
+        Integer requestingUserID = requestingUser.isPresent() ? requestingUser.get().id() : null;
+        downloadHistoryService.addFileToHistory(requestingUserID, id, fileCreator.RedirectFileCreatorName());
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=" + file.name() +

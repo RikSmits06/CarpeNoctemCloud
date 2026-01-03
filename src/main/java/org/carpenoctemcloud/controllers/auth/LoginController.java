@@ -3,7 +3,7 @@ package org.carpenoctemcloud.controllers.auth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
-import org.carpenoctemcloud.auth.AuthConfiguration;
+import org.carpenoctemcloud.configuration.AuthConfiguration;
 import org.carpenoctemcloud.auth.AuthTokenService;
 import org.carpenoctemcloud.auth.CurrentUserContext;
 import org.springframework.http.HttpStatus;

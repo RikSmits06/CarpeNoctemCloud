@@ -1,12 +1,13 @@
 package org.carpenoctemcloud.starred_remote_files;
 
-import java.util.List;
 import org.carpenoctemcloud.remote_file.RemoteFile;
 import org.carpenoctemcloud.remote_file.RemoteFileMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Database service to star, unstar and get starred files.
@@ -33,12 +34,12 @@ public class StarredRemoteFilesService {
     public List<RemoteFile> getStarredFiles(int accountID) {
         SqlParameterSource source = new MapSqlParameterSource().addValue("account", accountID);
         return template.query("""
-                                      select rf.*
-                                      from starred_remote_files starred,
-                                           remote_file rf
-                                      where rf.id = starred.remote_file_id
-                                      and starred.account_id=:account;
-                                      """, source, new RemoteFileMapper());
+                select rf.*
+                from starred_remote_files starred,
+                     remote_file rf
+                where rf.id = starred.remote_file_id
+                and starred.account_id=:account;
+                """, source, new RemoteFileMapper());
     }
 
     /**
@@ -51,9 +52,9 @@ public class StarredRemoteFilesService {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("account", accountID).addValue("file", fileID);
         template.update("""
-                                insert into starred_remote_files(account_id, remote_file_id)
-                                values (:account, :file);
-                                """, source);
+                insert into starred_remote_files(account_id, remote_file_id)
+                values (:account, :file);
+                """, source);
     }
 
     /**
@@ -67,8 +68,8 @@ public class StarredRemoteFilesService {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("account", accountID).addValue("file", fileID);
         return Boolean.TRUE.equals(template.query("""
-                                                          select exists(select * from starred_remote_files where account_id=:account and remote_file_id=:file);
-                                                          """, source, (rs) -> {
+                select exists(select * from starred_remote_files where account_id=:account and remote_file_id=:file);
+                """, source, (rs) -> {
             rs.next();
             return rs.getBoolean(1);
         }));
@@ -84,8 +85,8 @@ public class StarredRemoteFilesService {
         SqlParameterSource source =
                 new MapSqlParameterSource().addValue("account", accountID).addValue("file", fileID);
         template.update("""
-                                delete from starred_remote_files where account_id=:account
-                                                                   and remote_file_id=:file;
-                                """, source);
+                delete from starred_remote_files where account_id=:account
+                                                   and remote_file_id=:file;
+                """, source);
     }
 }

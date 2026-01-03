@@ -1,5 +1,6 @@
-package org.carpenoctemcloud.auth;
+package org.carpenoctemcloud.configuration;
 
+import org.carpenoctemcloud.auth.CurrentUserContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
