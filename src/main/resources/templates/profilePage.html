@@ -1,0 +1,67 @@
+<!--/*@thymesVar id="currentUser" type="org.carpenoctemcloud.account.Account"*/-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/headComponent}">
+</head>
+<body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
+<!-- nav -->
+<div th:replace="~{components/header :: header (activePage = 'profile')}"></div>
+
+<main class="flex-column flex-grow-1 d-flex p-5">
+    <div class="my-2 w-75 mx-auto" th:unless="currentUser == null">
+        <h4 th:text="'Welcome, ' + ${currentUser.name()} + '!'"></h4>
+        <p><strong>Email: </strong> <span th:text="${currentUser.email()}"></span></p>
+
+
+        <div class="accordion" id="accordion-profile">
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Starred files
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                     data-bs-parent="#accordion-profile">
+                    <div class="flex-column justify-content-center overflow-auto">
+                        <div class="accordion-body" th:unless="${starredFiles.isEmpty()}"
+                             th:each="result : ${starredFiles}">
+                            <div th:replace="~{components/searchResult :: result(resultRef=${result}, categories=${categories})}"></div>
+                        </div>
+                        <div class="accordion-body" th:if="${starredFiles.isEmpty()}">
+                            <h6>You have not starred a file yet...</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Recent downloads
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                     data-bs-parent="#accordion-profile">
+                    <div class="flex-column justify-content-center overflow-auto">
+                        <div class="accordion-body" th:unless="${recentDownloads.isEmpty()}"
+                             th:each="result : ${recentDownloads}">
+                            <div th:replace="~{components/searchResult :: result(resultRef=${result}, categories=${categories})}"></div>
+                        </div>
+                        <div class="accordion-body" th:if="${recentDownloads.isEmpty()}">
+                            <h6>You have not downloaded anything yet...</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- footer -->
+<div th:replace="~{components/footer :: footer}"></div>
+
+</body>
+</html>

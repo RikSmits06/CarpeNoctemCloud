@@ -46,12 +46,12 @@ public class RedirectFileController {
     /**
      * Creates a new controller instance.
      *
-     * @param fileService            The file service to query the files through.
+     * @param remoteFileService      The file service to query the files through.
      * @param currentUserContext     The context containing the currently logged-in user.
      * @param downloadHistoryService The service used to add files to download history.
      */
-    public RedirectFileController(RemoteFileService fileService, CurrentUserContext currentUserContext, DownloadHistoryService downloadHistoryService) {
-        this.fileService = fileService;
+    public RedirectFileController(RemoteFileService remoteFileService, CurrentUserContext currentUserContext, DownloadHistoryService downloadHistoryService) {
+        this.fileService = remoteFileService;
         this.currentUserContext = currentUserContext;
         this.downloadHistoryService = downloadHistoryService;
     }

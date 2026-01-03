@@ -1,5 +1,6 @@
 package org.carpenoctemcloud.request_logging;
 
+import org.carpenoctemcloud.auth.CurrentUserContext;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -35,5 +36,6 @@ public class RequestLogService {
                                 values (current_date, :endpoint, 1)
                                 on conflict (day, endpoint) do update set count = request_log.count + 1;
                                 """, source);
+
     }
 }
