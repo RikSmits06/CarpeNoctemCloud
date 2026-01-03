@@ -10,23 +10,16 @@ import org.carpenoctemcloud.remote_file.RemoteFile;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.annotation.RequestScope;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.ByteArrayInputStream;
@@ -53,12 +46,12 @@ public class RedirectFileController {
     /**
      * Creates a new controller instance.
      *
-     * @param fileService            The file service to query the files through.
+     * @param remoteFileService      The file service to query the files through.
      * @param currentUserContext     The context containing the currently logged-in user.
      * @param downloadHistoryService The service used to add files to download history.
      */
-    public RedirectFileController(RemoteFileService fileService, CurrentUserContext currentUserContext, DownloadHistoryService downloadHistoryService) {
-        this.fileService = fileService;
+    public RedirectFileController(RemoteFileService remoteFileService, CurrentUserContext currentUserContext, DownloadHistoryService downloadHistoryService) {
+        this.fileService = remoteFileService;
         this.currentUserContext = currentUserContext;
         this.downloadHistoryService = downloadHistoryService;
     }
