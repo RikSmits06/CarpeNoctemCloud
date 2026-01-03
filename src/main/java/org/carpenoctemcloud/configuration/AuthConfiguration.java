@@ -22,7 +22,7 @@ public class AuthConfiguration {
     /**
      * How many hours until an auth token is no longer valid.
      */
-    public static final int MAX_AGE_AUTH_TOKEN_IN_HOURS = 48;
+    public static final int MAX_AGE_AUTH_TOKEN_IN_HOURS = 336;
 
     /**
      * The time in hours until an email confirmation token is no longer valid.
