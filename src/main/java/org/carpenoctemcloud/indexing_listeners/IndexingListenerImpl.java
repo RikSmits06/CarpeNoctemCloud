@@ -6,10 +6,12 @@ import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Prints out all the indexed files to standard out.
  */
+@Component
 public class IndexingListenerImpl extends IndexingListener {
 
     private final RemoteFileService fileService;

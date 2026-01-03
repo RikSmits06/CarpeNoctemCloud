@@ -1,8 +1,5 @@
 package org.carpenoctemcloud.shell_commands;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Optional;
 import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.indexing.ServerIndexer;
@@ -19,6 +16,10 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 /**
  * Utility class for commands to scan servers manually.
  */
@@ -28,6 +29,7 @@ public class ScanServerCommand {
     private final DirectoryService directoryService;
     private final IndexingTask indexingTask;
     private final ServerService serverService;
+    private final IndexingListenerBatch indexingListenerBatch;
 
     /**
      * Creates a new object to store the shell command definitions.
@@ -38,11 +40,12 @@ public class ScanServerCommand {
      * @param serverService    Service used to get all servers.
      */
     public ScanServerCommand(RemoteFileService fileService, DirectoryService directoryService,
-                             IndexingTask indexingTask, ServerService serverService) {
+                             IndexingTask indexingTask, ServerService serverService, IndexingListenerBatch indexingListenerBatch) {
         this.fileService = fileService;
         this.directoryService = directoryService;
         this.indexingTask = indexingTask;
         this.serverService = serverService;
+        this.indexingListenerBatch = indexingListenerBatch;
     }
 
     /**
@@ -64,8 +67,7 @@ public class ScanServerCommand {
         } catch (ServerProtocolNotFoundException e) {
             return "Could not get indexer for given server.";
         }
-        IndexingListener listener = new IndexingListenerBatch(fileService, directoryService);
-        return timedIndexing(url, indexer, listener);
+        return timedIndexing(url, indexer, indexingListenerBatch);
     }
 
     /**

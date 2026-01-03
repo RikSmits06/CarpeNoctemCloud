@@ -173,4 +173,17 @@ public class RemoteFileService {
                 limit 1;
                 """, source, new ServerMapper()).getFirst();
     }
+
+    public int getNumberOfRemoteFiles() {
+        Integer res = template.query("""
+                select count(*) from remote_file;
+                """, rs -> {
+            if (!rs.next()) {
+                return 0;
+            }
+            return rs.getInt(1);
+        });
+
+        return res == null ? 0 : res;
+    }
 }

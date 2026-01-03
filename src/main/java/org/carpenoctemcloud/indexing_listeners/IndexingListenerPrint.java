@@ -2,10 +2,12 @@ package org.carpenoctemcloud.indexing_listeners;
 
 import org.carpenoctemcloud.indexing.IndexedFile;
 import org.carpenoctemcloud.indexing.IndexingListener;
+import org.springframework.stereotype.Component;
 
 /**
  * Debugging listener to print out the indexed files to stdout.
  */
+@Component
 public class IndexingListenerPrint extends IndexingListener {
     /**
      * Creates a new listener which prints out to stdout.

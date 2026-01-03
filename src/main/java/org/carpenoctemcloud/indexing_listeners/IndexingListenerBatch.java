@@ -1,16 +1,20 @@
 package org.carpenoctemcloud.indexing_listeners;
 
-import java.util.ArrayList;
 import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.indexing.IndexedFile;
 import org.carpenoctemcloud.indexing.IndexingListener;
 import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 /**
  * Implementation of {@link IndexingListener} which saves to the database using batches instead of 1 by 1.
  */
+@Component
 public class IndexingListenerBatch extends IndexingListener {
     private final Logger logger;
     private final int maxBufferSize = 1000;
@@ -24,6 +28,7 @@ public class IndexingListenerBatch extends IndexingListener {
      * @param fileService      The service to save the found files to.
      * @param directoryService The service used to create new directories.
      */
+    @Autowired
     public IndexingListenerBatch(RemoteFileService fileService, DirectoryService directoryService) {
         this.fileService = fileService;
         this.directoryService = directoryService;
