@@ -17,7 +17,7 @@ public class HomePageController {
     }
 
     /**
-     * Mapping for the home page html file.
+     * Mapping for the home page HTML file.
      *
      * @param model The model of the page, is not used for this one.
      * @return String to the template of the homePage.
