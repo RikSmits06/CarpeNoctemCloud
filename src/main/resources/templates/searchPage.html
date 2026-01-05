@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/headComponent}">
+</head>
+<body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
+<!-- nav -->
+<div th:replace="~{components/header :: header (activePage = 'search')}"></div>
+<!-- content -->
+<main class="my-3 flex-grow-1">
+    <!-- search -->
+    <div class="my-2 w-75 mx-auto">
+        <form class="d-flex flex-row justify-content-center" action="/search"
+              method="get"
+              id="searchForm">
+            <label hidden="hidden" for="inputOffset"></label>
+            <input class="m-0 w-20 h-100"
+                   type="number"
+                   name="offset"
+                   th:value="0"
+                   id="inputOffset"
+                   hidden="hidden">
+            <label hidden="hidden" for="inputQuery"></label>
+            <input
+                    class="form-control rounded-end-0"
+                    th:value="${query}"
+                    placeholder="Search..."
+                    type="search" name="query"
+                    id="inputQuery">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle rounded-start-0 rounded-end-0"
+                        type="button"
+                        id="categoryDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Categories
+                </button>
+                <div class="dropdown-menu p-2" aria-labelledby="categoryDropdown" style="min-width: 200px;">
+                    <div th:each="cat : ${categories}" class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="cat"
+                               th:value="${cat.id()}"
+                               th:id="'cat' + ${cat.id()}"
+                               th:checked="${selectedCategories.contains(cat.id())}">
+                        <label class="form-check-label" th:for="'cat' + ${cat.id()}" th:text="${cat.name()}">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <input class="btn btn-primary rounded-start-0" type="submit" value="Submit">
+        </form>
+    </div>
+
+    <!-- results -->
+    <div class="my-2 w-75 mx-auto">
+        <div class="flex-column justify-content-center">
+            <div th:each="result : ${results}">
+                <div th:replace="~{components/searchResult :: result(resultRef=${result}, categories=${categories})}"></div>
+            </div>
+        </div>
+    </div>
+    <!-- pagination -->
+    <div class="my-2 mb-2 w-75 mx-auto d-flex justify-content-center">
+        <form action="/search" th:unless="${offset==0}">
+            <label>
+                <input type="number" name="offset" hidden="hidden"
+                       th:value="${offset}-${maxFetchSize}">
+            </label>
+            <label>
+                <input hidden="hidden" th:value="${query}" type="text" name="query">
+            </label>
+            <input th:each="catId : ${selectedCategories}"
+                   type="hidden"
+                   name="cat"
+                   th:value="${catId}">
+            <button type="submit" class="btn btn-primary">Previous</button>
+        </form>
+        <form action="/search" th:unless="${results.size() < maxFetchSize}">
+            <label>
+                <input type="number" name="offset" hidden="hidden"
+                       th:value="${offset}+${maxFetchSize}">
+            </label>
+            <label>
+                <input hidden="hidden" th:value="${query}" type="text" name="query">
+            </label>
+            <input th:each="catId : ${selectedCategories}"
+                   type="hidden"
+                   name="cat"
+                   th:value="${catId}">
+            <button type="submit" class="btn btn-primary">Next</button>
+        </form>
+    </div>
+</main>
+<!-- footer -->
+<div th:replace="~{components/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{components/headComponent}">
+</head>
+<body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
+<!-- nav -->
+<div th:replace="~{components/header :: header (activePage = 'login')}"></div>
+
+<main class="flex-grow-1 d-flex justify-content-center">
+    <div class="d-flex flex-column my-4 align-items-center gap-4">
+        <h1>Confirm Email</h1>
+
+        <!-- Error message -->
+        <div th:if="${error != null && !error.isBlank()}" class="alert alert-danger text-center" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <form class="d-flex flex-column align-items-center gap-3" action="/auth/confirm/" method="post"
+              style="width: 420px;">
+            <div class="w-100">
+                <input class="form-control" name="token" placeholder="Confirmation token..." type="text" minlength="1"
+                       required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Confirm Email</button>
+        </form>
+
+        <div class="d-flex flex-column gap-2 align-items-center">
+            <button onclick="window.location.href='/auth/login'" class="btn btn-outline-secondary"
+                    style="width: 420px;">
+                Back to Login
+            </button>
+        </div>
+    </div>
+</main>
+
+<!-- footer -->
+<div th:replace="~{components/footer :: footer}"></div>
+
+</body>
+</html>
