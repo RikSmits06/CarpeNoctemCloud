@@ -42,7 +42,8 @@ class DbLayer:
         cur.execute("""
                     select started, ended, files_indexed
                     from index_task_log
-                    order by started desc limit 10;
+                    order by started desc
+                    limit 10;
                     """)
         result = cur.fetchall()
         cur.close()
@@ -53,7 +54,8 @@ class DbLayer:
         cur.execute("""
                     select started, ended, files_deleted
                     from delete_task_log
-                    order by started desc limit 10;
+                    order by started desc
+                    limit 10;
                     """)
         result = cur.fetchall()
         cur.close()
@@ -117,6 +119,25 @@ class DbLayer:
                     where rf.directory_id = dir.id
                       and dir.server_id = ser.id
                     group by ser.host;""")
+        result = cur.fetchall()
+        cur.close()
+        return result
+
+    def get_download_files(self):
+        cur: cursor = self._conn.cursor()
+        cur.execute("""
+                    select case when dh.account_id is not null then acc.email else null end,
+                           rf.name,
+                           dh.time,
+                           dh.redirector_used
+                    from download_history dh,
+                         remote_file rf,
+                         account acc
+                    where dh.remote_file_id = rf.id
+                      and (acc.id = dh.account_id or dh.account_id is null)
+                    order by time desc;
+
+                    """)
         result = cur.fetchall()
         cur.close()
         return result

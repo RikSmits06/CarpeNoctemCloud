@@ -24,7 +24,9 @@ if st.session_state.get("is_logged_in", False):
                 st.Page("cleanup_task_page.py", title="Cleanup Task")],
             "Requests":
                 [st.Page("daily_request_page.py", title="Daily Requests"),
-                 st.Page("endpoint_history_page.py", title="Endpoint History")]
+                 st.Page("endpoint_history_page.py", title="Endpoint History"),
+                 st.Page("download_history_page.py", title="Download History")
+                 ],
         })
     st.title(pg.title)
     pg.run()
