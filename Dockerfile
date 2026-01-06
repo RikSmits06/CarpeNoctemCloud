@@ -10,5 +10,5 @@ EXPOSE 8080
 COPY pom.xml .
 COPY /src src
 COPY .env .
-CMD ["mvn", "spring-boot:run", "-Dspring.profiles.include=docker"]
-
+RUN mvn -Dmaven.test.skip package
+CMD ["java", "-jar", "-Dspring.profiles.include=docker", "target/CarpeNoctemCloud-0.0.1-SNAPSHOT.jar"]
