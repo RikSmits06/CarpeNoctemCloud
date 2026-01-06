@@ -30,4 +30,3 @@ services:
       - cncloud
 volumes:
   db-data:
-  certbot-conf:
