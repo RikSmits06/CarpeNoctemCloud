@@ -3,16 +3,12 @@ services:
     depends_on:
       - db
     build: .
-    ports:
-      - "8080:8080"
   admin:
     environment:
       - ADMIN_PANEL_DB_HOST=db
     depends_on:
       - db
     build: adminPanel/
-    ports:
-      - "5001:5001"
   db:
     environment:
       POSTGRES_USER: cncloud
@@ -22,6 +18,23 @@ services:
     image: postgres:18-alpine3.23
     volumes:
       - db-data:/db-data
-
+  nginx:
+    build: nginx/
+    ports:
+      - "443:443"
+      - "8080:80"
+    volumes:
+      - certbot-www:/var/www/certbot/:ro
+    depends_on:
+      - admin
+      - certbot
+      - cncloud
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certbot-www:/var/www/certbot/:rw
+      - certbot-conf:/etc/letsencrypt/:rw
 volumes:
   db-data:
+  certbot-www:
+  certbot-conf:
