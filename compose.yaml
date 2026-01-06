@@ -1,0 +1,27 @@
+services:
+  cncloud:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - "8080:8080"
+  admin:
+    environment:
+      - ADMIN_PANEL_DB_HOST=db
+    depends_on:
+      - db
+    build: adminPanel/
+    ports:
+      - "5001:5001"
+  db:
+    environment:
+      POSTGRES_USER: cncloud
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: cncloud
+      PGDATA: /db-data
+    image: postgres:18-alpine3.23
+    volumes:
+      - db-data:/db-data
+
+volumes:
+  db-data:

@@ -1,19 +1,22 @@
+import os
+from os import environ
+
 import psycopg2
 from psycopg2._psycopg import connection, cursor
 import bcrypt
 
-_conn: connection | None = None
-
 
 class DbLayer:
+    _hostname = os.getenv("ADMIN_PANEL_DB_HOST", "localhost")
     _conn: connection = psycopg2.connect(
         dbname="cncloud",
         user="cncloud",
         password="12345678",
-        host="localhost"
+        host=_hostname
     )
 
     def __init__(self):
+        print(self._hostname)
         pass
 
     def get_all_tables(self):
