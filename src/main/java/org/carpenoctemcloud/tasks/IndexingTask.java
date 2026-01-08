@@ -1,10 +1,8 @@
 package org.carpenoctemcloud.tasks;
 
-import org.carpenoctemcloud.directory.DirectoryService;
 import org.carpenoctemcloud.index_task_log.IndexTaskLogService;
 import org.carpenoctemcloud.indexing.ServerIndexer;
 import org.carpenoctemcloud.indexing_listeners.IndexingListenerBatch;
-import org.carpenoctemcloud.remote_file.RemoteFileService;
 import org.carpenoctemcloud.server.Server;
 import org.carpenoctemcloud.server.ServerIndexerFactory;
 import org.carpenoctemcloud.server.ServerProtocolNotFoundException;
@@ -22,28 +20,21 @@ import java.util.List;
  * Class which embodies the indexing task.
  * It runs periodically to make sure the database is up to date.
  */
-@Component
+@Component()
 public class IndexingTask {
     private static final Logger logger = LoggerFactory.getLogger(IndexingTask.class);
-    private final RemoteFileService remoteFileService;
     private final IndexTaskLogService logService;
-    private final DirectoryService directoryService;
     private final ServerService serverService;
     private final IndexingListenerBatch indexingListenerBatch;
 
     /**
      * Constructor for the indexing task, Requires remoteFileService to save the indexed files.
      *
-     * @param remoteFileService The remoteFileService handling db requests.
-     * @param logService        The log service used to store the indexing task result.
-     * @param directoryService  The service given to the index listeners.
-     * @param serverService     The service to get server information.
+     * @param logService    The log service used to store the indexing task result.
+     * @param serverService The service to get server information.
      */
-    public IndexingTask(RemoteFileService remoteFileService, IndexTaskLogService logService,
-                        DirectoryService directoryService, ServerService serverService, IndexingListenerBatch indexingListenerBatch) {
-        this.remoteFileService = remoteFileService;
+    public IndexingTask(IndexTaskLogService logService, ServerService serverService, IndexingListenerBatch indexingListenerBatch) {
         this.logService = logService;
-        this.directoryService = directoryService;
         this.serverService = serverService;
         this.indexingListenerBatch = indexingListenerBatch;
     }
@@ -69,5 +60,6 @@ public class IndexingTask {
 
         Timestamp endTime = Timestamp.from(Instant.now());
         logService.addIndexLog(startTime, endTime, indexingListenerBatch.getTotalFilesIndexed());
+        indexingListenerBatch.resetFilesIndexedCount();
     }
 }

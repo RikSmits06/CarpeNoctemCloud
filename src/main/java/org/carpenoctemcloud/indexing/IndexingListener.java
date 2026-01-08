@@ -84,4 +84,8 @@ public abstract class IndexingListener {
     final public long getTotalFilesIndexed() {
         return totalFilesIndexed;
     }
+
+    public final void resetFilesIndexedCount() {
+        totalFilesIndexed = 0;
+    }
 }
