@@ -8,6 +8,7 @@ RUN apt install -y maven
 EXPOSE 8080
 
 COPY pom.xml .
+RUN mvn verify clean --fail-never
 COPY /src src
 COPY .env .
 RUN mvn -Dmaven.test.skip package
