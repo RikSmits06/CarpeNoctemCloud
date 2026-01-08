@@ -138,8 +138,8 @@ class DbLayer:
                          account acc
                     where dh.remote_file_id = rf.id
                       and (acc.id = dh.account_id or dh.account_id is null)
-                    order by time desc;
-
+                    order by time desc
+                    limit 100;
                     """)
         result = cur.fetchall()
         cur.close()
