@@ -99,10 +99,12 @@ public class RedirectFileController {
         Integer requestingUserID = requestingUser.isPresent() ? requestingUser.get().id() : null;
         downloadHistoryService.addFileToHistory(requestingUserID, id, fileCreator.RedirectFileCreatorName());
 
+        // We need to sanitize the filename otherwise it cannot be correctly downloaded sometimes.
+        String downloadFileName = file.name().replaceAll("\\W+", "_");
+        String suffixFileName = fileCreator.compressFile() ? ".zip" : fileCreator.getFileExtension();
+
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=" + file.name() +
-                                (fileCreator.compressFile() ? ".zip" :
-                                        fileCreator.getFileExtension()))
+                        "attachment; filename=" + downloadFileName + suffixFileName)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new InputStreamResource(output));
     }
