@@ -10,7 +10,7 @@ public class ConfigurationConstants {
      * This means that if a cleanup cycle is triggered, and the file hasn't been indexed in 4 days,
      * it will be deleted.
      */
-    public static final int MAX_AGE_CACHE_IN_DAYS = 4;
+    public static final int MAX_AGE_CACHE_IN_DAYS = 7;
     /**
      * Limits how many films can be queried at once.
      */
